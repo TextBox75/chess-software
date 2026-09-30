@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static software.ulpgc.chess.File.*;
+import static software.ulpgc.chess.Rank.*;
 import static software.ulpgc.chess.Piece.*;
 
 public final class Board {
@@ -16,15 +18,48 @@ public final class Board {
 
     public static Map<Square, Piece> initialMap() {
         Map<Square, Piece> Initial = Map.ofEntries(
-                new Square("a1"), WhiteRook,
-                new Square("a1"), WhiteRook
+                Map.entry(new Square(A, R1), WhiteRook),
+                Map.entry(new Square(B, R1), WhiteKnight),
+                Map.entry(new Square(C, R1), WhiteBishop),
+                Map.entry(new Square(D, R1), WhiteQueen),
+                Map.entry(new Square(E, R1), WhiteKing),
+                Map.entry(new Square(F, R1), WhiteBishop),
+                Map.entry(new Square(G, R1), WhiteKnight),
+                Map.entry(new Square(H, R1), WhiteRook),
+
+                Map.entry(new Square(A, R2), WhitePawn),
+                Map.entry(new Square(B, R2), WhitePawn),
+                Map.entry(new Square(C, R2), WhitePawn),
+                Map.entry(new Square(D, R2), WhitePawn),
+                Map.entry(new Square(E, R2), WhitePawn),
+                Map.entry(new Square(F, R2), WhitePawn),
+                Map.entry(new Square(G, R2), WhitePawn),
+                Map.entry(new Square(H, R2), WhitePawn),
+
+                Map.entry(new Square(A, R7), BlackPawn),
+                Map.entry(new Square(B, R7), BlackPawn),
+                Map.entry(new Square(C, R7), BlackPawn),
+                Map.entry(new Square(D, R7), BlackPawn),
+                Map.entry(new Square(E, R7), BlackPawn),
+                Map.entry(new Square(F, R7), BlackPawn),
+                Map.entry(new Square(G, R7), BlackPawn),
+                Map.entry(new Square(H, R7), BlackPawn),
+
+                Map.entry(new Square(A, R8), BlackRook),
+                Map.entry(new Square(B, R8), BlackKnight),
+                Map.entry(new Square(C, R8), BlackBishop),
+                Map.entry(new Square(D, R8), BlackQueen),
+                Map.entry(new Square(E, R8), BlackKing),
+                Map.entry(new Square(F, R8), BlackBishop),
+                Map.entry(new Square(G, R8), BlackKnight),
+                Map.entry(new Square(H, R8), BlackRook)
         );
 
         return Initial;
     }
 
     public Board move(Square from, Square to) {
-
+        return null;
     }
 
     public Board(Map<Square, Piece> pieces) {
@@ -46,24 +81,4 @@ public final class Board {
     public Map<Square, Piece> pieces() {
         return pieces;
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != this.getClass()) return false;
-        var that = (Board) obj;
-        return Objects.equals(this.pieces, that.pieces);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(pieces);
-    }
-
-    @Override
-    public String toString() {
-        return "Board[" +
-                "pieces=" + pieces + ']';
-    }
-
 }
