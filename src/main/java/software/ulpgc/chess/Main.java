@@ -5,14 +5,7 @@ import static software.ulpgc.chess.Rank.*;
 
 public class Main {
     static void main() {
-        Square a = new Square(A, R1);
-        Square b = new Square(A, R1);
-        Square c = b;
-
-
-
-        System.out.println(a==b);
-        System.out.println(b==c);
-        System.out.println(a.equals(b));
+        Board gameBoard = Board.initial();
+        gameBoard.move(new Square(A, R7), new Square(D, R4));
     }
 }

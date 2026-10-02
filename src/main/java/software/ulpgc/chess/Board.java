@@ -59,7 +59,13 @@ public final class Board {
     }
 
     public Board move(Square from, Square to) {
-        return null;
+        Map<Square, Piece> newPieces = new HashMap<>(pieces);
+
+        Piece fromPiece = pieces.get(from);
+        newPieces.remove(from);
+        newPieces.put(to, fromPiece);
+
+        return new Board(newPieces);
     }
 
     public Board(Map<Square, Piece> pieces) {
