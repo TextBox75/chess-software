@@ -1,13 +1,11 @@
-package software.ulpgc.chess;
+package software.ulpgc.chess.domain.model;
 
-import java.sql.SQLInvalidAuthorizationSpecException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+import java.util.TreeMap;
 
-import static software.ulpgc.chess.File.*;
-import static software.ulpgc.chess.Rank.*;
-import static software.ulpgc.chess.Piece.*;
+import static software.ulpgc.chess.domain.model.File.*;
+import static software.ulpgc.chess.domain.model.Rank.*;
+import static software.ulpgc.chess.domain.model.Piece.*;
 
 public final class Board {
     private final Map<Square, Piece> pieces;
@@ -17,6 +15,7 @@ public final class Board {
     }
 
     public static Map<Square, Piece> initialMap() {
+        // TODO: HACER STRINGS!!!
         Map<Square, Piece> Initial = Map.ofEntries(
                 Map.entry(new Square(A, R1), WhiteRook),
                 Map.entry(new Square(B, R1), WhiteKnight),
@@ -59,13 +58,10 @@ public final class Board {
     }
 
     public Board move(Square from, Square to) {
-        Map<Square, Piece> newPieces = new HashMap<>(pieces);
-
-        Piece fromPiece = pieces.get(from);
-        newPieces.remove(from);
-        newPieces.put(to, fromPiece);
-
-        return new Board(newPieces);
+        Map<Square, Piece> newPieces = new TreeMap<>(pieces);
+        Piece movingPiece = newPieces.remove(from);
+        newPieces.put(to, movingPiece);
+        return new Board(Map.copyOf(newPieces));
     }
 
     public Board(Map<Square, Piece> pieces) {

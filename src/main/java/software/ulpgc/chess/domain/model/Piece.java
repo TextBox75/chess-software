@@ -1,6 +1,6 @@
-package software.ulpgc.chess;
+package software.ulpgc.chess.domain.model;
 
-import static software.ulpgc.chess.Color.*;
+import static software.ulpgc.chess.domain.model.Color.*;
 
 public enum Piece {
     WhitePawn,
@@ -23,12 +23,8 @@ public enum Piece {
     boolean IsPawn() {
         return this == WhitePawn || this == BlackPawn;
     }
-    boolean IsRook() {
-        return this == WhiteRook || this == BlackRook;
-    }
-    boolean IsKnight() {
-        return this == WhiteKnight || this == BlackKnight;
-    }
+    boolean IsRook() { return this == WhiteRook || this == BlackRook; }
+    boolean IsKnight() { return this == WhiteKnight || this == BlackKnight; }
     boolean IsBishop() {
         return this == WhiteBishop || this == BlackBishop;
     }

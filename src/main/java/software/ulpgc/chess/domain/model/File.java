@@ -1,4 +1,4 @@
-package software.ulpgc.chess;
+package software.ulpgc.chess.domain.model;
 
 public enum File {
     A('a'),
@@ -14,5 +14,9 @@ public enum File {
 
     File (char symbol) {
         this.symbol = symbol;
+    }
+
+    public char symbol() {
+        return this.symbol;
     }
 }

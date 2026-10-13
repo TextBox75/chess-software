@@ -1,7 +1,7 @@
-package software.ulpgc.chess;
+package software.ulpgc.chess.domain.model;
 
-import static software.ulpgc.chess.File.*;
-import static software.ulpgc.chess.Rank.*;
+import static software.ulpgc.chess.domain.model.File.*;
+import static software.ulpgc.chess.domain.model.Rank.*;
 
 public class Main {
     static void main() {
