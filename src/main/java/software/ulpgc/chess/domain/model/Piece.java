@@ -1,46 +1,38 @@
 package software.ulpgc.chess.domain.model;
 
-import static software.ulpgc.chess.domain.model.Color.*;
-
 public enum Piece {
-    WhitePawn,
-    WhiteRook,
-    WhiteKnight,
-    WhiteBishop,
-    WhiteKing,
-    WhiteQueen,
-    BlackPawn,
-    BlackRook,
-    BlackKnight,
-    BlackBishop,
-    BlackKing,
-    BlackQueen;
+    WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing,
+    BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing;
 
-    Color color() {
-        return isWhite() ? White : Black;
+    public boolean isWhite() {
+        return this.name().startsWith("White");
     }
 
-    boolean IsPawn() {
-        return this == WhitePawn || this == BlackPawn;
-    }
-    boolean IsRook() { return this == WhiteRook || this == BlackRook; }
-    boolean IsKnight() { return this == WhiteKnight || this == BlackKnight; }
-    boolean IsBishop() {
-        return this == WhiteBishop || this == BlackBishop;
-    }
-    boolean IsKing() {
-        return this == WhiteKing || this == BlackKing;
-    }
-    boolean IsQueen() {
-        return this == WhiteQueen || this == BlackQueen;
+    public boolean isBlack() {
+        return this.name().startsWith("Black");
     }
 
-    private boolean isWhite() {
-        return this == WhitePawn ||
-                this == WhiteRook ||
-                this == WhiteKnight ||
-                this == WhiteKing ||
-                this == WhiteQueen ||
-                this == WhiteBishop;
+    public boolean isRook() {
+        return this.name().endsWith("Rook");
+    }
+
+    public boolean isPawn() {
+        return this.name().endsWith("Pawn");
+    }
+
+    public boolean isKnight() {
+        return this.name().endsWith("Knight");
+    }
+
+    public boolean isBishop() {
+        return this.name().endsWith("Bishop");
+    }
+
+    public boolean isQueen() {
+        return this.name().endsWith("Queen");
+    }
+
+    public boolean isKing() {
+        return this.name().endsWith("King");
     }
 }
