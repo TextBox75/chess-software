@@ -3,7 +3,7 @@ package tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import software.ulpgc.chess.adapters.FenBoardDeserializer;
+import software.ulpgc.chess.infrastructure.adapters.FenBoardDeserializer;
 import software.ulpgc.chess.domain.model.Board;
 import software.ulpgc.chess.domain.model.Piece;
 import software.ulpgc.chess.domain.model.Square;
