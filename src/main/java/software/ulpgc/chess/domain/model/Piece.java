@@ -1,8 +1,33 @@
 package software.ulpgc.chess.domain.model;
 
+import java.util.Arrays;
+
 public enum Piece {
-    WhitePawn, WhiteKnight, WhiteBishop, WhiteRook, WhiteQueen, WhiteKing,
-    BlackPawn, BlackKnight, BlackBishop, BlackRook, BlackQueen, BlackKing;
+    WhitePawn('P'),
+    WhiteKnight('N'),
+    WhiteBishop('B'),
+    WhiteRook('R'),
+    WhiteQueen('Q'),
+    WhiteKing('K'),
+    BlackPawn('p'),
+    BlackKnight('n'),
+    BlackBishop('b'),
+    BlackRook('r'),
+    BlackQueen('q'),
+    BlackKing('k');
+
+    private final char fenSymbol;
+
+    Piece(char fenSymbol) {
+        this.fenSymbol = fenSymbol;
+    }
+
+    public static Piece fromFenSymbol(char symbol) {
+        return Arrays.stream(values())
+                .filter(piece -> piece.fenSymbol == symbol)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Pieza no encontrada para el símbolo: " + symbol));
+    }
 
     public boolean isWhite() {
         return this.name().startsWith("White");

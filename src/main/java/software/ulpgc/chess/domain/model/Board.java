@@ -1,5 +1,6 @@
 package software.ulpgc.chess.domain.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -15,7 +16,6 @@ public final class Board {
     }
 
     public static Map<Square, Piece> initialMap() {
-        // TODO: HACER STRINGS!!!
         Map<Square, Piece> Initial = Map.ofEntries(
                 Map.entry(new Square(A, R1), WhiteRook),
                 Map.entry(new Square(B, R1), WhiteKnight),
@@ -58,7 +58,7 @@ public final class Board {
     }
 
     public Board move(Square from, Square to) {
-        Map<Square, Piece> newPieces = new TreeMap<>(pieces);
+        Map<Square, Piece> newPieces = new HashMap<>(pieces);
         Piece movingPiece = newPieces.remove(from);
         newPieces.put(to, movingPiece);
         return new Board(Map.copyOf(newPieces));
