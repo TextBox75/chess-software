@@ -1,4 +1,4 @@
-package software.ulpgc.chess.arquitecture.ports;
+package software.ulpgc.chess.architecture.ports;
 
 import software.ulpgc.chess.domain.model.Board;
 

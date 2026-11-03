@@ -3,7 +3,7 @@ package software.ulpgc.chess.infrastructure.adapters;
 import software.ulpgc.chess.domain.model.Board;
 import software.ulpgc.chess.domain.model.Piece;
 import software.ulpgc.chess.domain.model.Square;
-import software.ulpgc.chess.arquitecture.ports.BoardDeserializer;
+import software.ulpgc.chess.architecture.ports.BoardDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
