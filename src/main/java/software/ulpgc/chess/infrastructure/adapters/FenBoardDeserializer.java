@@ -21,10 +21,8 @@ public class FenBoardDeserializer implements BoardDeserializer {
     private Map<Square, Piece> piecesIn(String[] ranks) {
         Map<Square, Piece> map = new HashMap<>();
         int j = 7;
-        for (String rank : ranks) {
-            System.out.println(rank);
+        for (String rank : ranks)
             map.putAll(piecesIn(j--, rank.toCharArray()));
-        }
         return map;
     }
 
