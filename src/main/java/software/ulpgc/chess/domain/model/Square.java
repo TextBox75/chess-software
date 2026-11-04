@@ -36,4 +36,10 @@ public record Square(File file, Rank rank) {
                 .findFirst()
                 .orElse(null);
     }
+
+    public SquareDistance distanceTo(Square to) {
+        int dx = to.file().ordinal() - this.file().ordinal();
+        int dy = to.rank().ordinal() - this.rank().ordinal();
+        return new SquareDistance(dx, dy);
+    }
 }

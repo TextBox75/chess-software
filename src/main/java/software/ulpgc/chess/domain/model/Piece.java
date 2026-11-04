@@ -1,25 +1,31 @@
 package software.ulpgc.chess.domain.model;
 
+import software.ulpgc.chess.architecture.ports.PieceMovement;
+
 import java.util.Arrays;
 
+import static software.ulpgc.chess.domain.model.StandardPieceMovement.*;
+
 public enum Piece {
-    WhitePawn('P'),
-    WhiteKnight('N'),
-    WhiteBishop('B'),
-    WhiteRook('R'),
-    WhiteQueen('Q'),
-    WhiteKing('K'),
-    BlackPawn('p'),
-    BlackKnight('n'),
-    BlackBishop('b'),
-    BlackRook('r'),
-    BlackQueen('q'),
-    BlackKing('k');
+    WhitePawn('P', Pawn),
+    WhiteKnight('N', Knight),
+    WhiteBishop('B', Bishop),
+    WhiteRook('R', Rook),
+    WhiteQueen('Q', Queen),
+    WhiteKing('K', King),
+    BlackPawn('p', Pawn),
+    BlackKnight('n', Knight),
+    BlackBishop('b', Bishop),
+    BlackRook('r', Rook),
+    BlackQueen('q', Queen),
+    BlackKing('k', King);
 
     private final char fenSymbol;
+    private final PieceMovement movement;
 
-    Piece(char fenSymbol) {
+    Piece(char fenSymbol, PieceMovement movement) {
         this.fenSymbol = fenSymbol;
+        this.movement = movement;
     }
 
     public static Piece fromFenSymbol(char symbol) {
@@ -29,35 +35,7 @@ public enum Piece {
                 .orElseThrow(() -> new IllegalArgumentException("Pieza no encontrada para el símbolo: " + symbol));
     }
 
-    public boolean isWhite() {
-        return this.name().startsWith("White");
-    }
-
-    public boolean isBlack() {
-        return this.name().startsWith("Black");
-    }
-
-    public boolean isRook() {
-        return this.name().endsWith("Rook");
-    }
-
-    public boolean isPawn() {
-        return this.name().endsWith("Pawn");
-    }
-
-    public boolean isKnight() {
-        return this.name().endsWith("Knight");
-    }
-
-    public boolean isBishop() {
-        return this.name().endsWith("Bishop");
-    }
-
-    public boolean isQueen() {
-        return this.name().endsWith("Queen");
-    }
-
-    public boolean isKing() {
-        return this.name().endsWith("King");
+    public PieceMovement getMovement() {
+        return movement;
     }
 }

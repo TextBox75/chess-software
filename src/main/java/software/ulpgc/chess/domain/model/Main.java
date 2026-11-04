@@ -7,5 +7,8 @@ public class Main {
     static void main() {
         Board gameBoard = Board.initial();
         gameBoard.move(new Square(A, R7), new Square(D, R4));
+
+        // TODO: comportamiento de fichas (si es valido geometricamente y si es valido en tablero)
+        // TODO: estado de juego
     }
 }

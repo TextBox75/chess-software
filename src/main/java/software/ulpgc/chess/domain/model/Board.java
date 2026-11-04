@@ -59,9 +59,19 @@ public final class Board {
 
     public Board move(Square from, Square to) {
         Map<Square, Piece> newPieces = new HashMap<>(pieces);
-        Piece movingPiece = newPieces.remove(from);
-        newPieces.put(to, movingPiece);
+
+        Piece movingPiece = newPieces.get(from);
+
+        if (movingPiece.getMovement().isMoveValid(from, to) && isSquareEmpty(to)) {
+            newPieces.remove(from); // TODO: comprobar si esto es valido
+            newPieces.put(to, movingPiece);
+        }
+
         return new Board(Map.copyOf(newPieces));
+    }
+
+    public boolean isSquareEmpty(Square to) {
+        return this.pieces.get(to) == null;
     }
 
     public Board(Map<Square, Piece> pieces) {
