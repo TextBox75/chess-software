@@ -58,36 +58,32 @@ public final class Board {
     }
 
     public Board move(Square from, Square to) {
+        Piece piece = pieces.get(from);
+
+        if (!piece.getMovement().isMoveValid(from, to)) return new Board(pieces);
+
+        if (!isPathClear(piece, from, to)) return new Board(pieces);
+
+        if (!canOccupySquare(piece, to)) return new Board(pieces);
+
         Map<Square, Piece> newPieces = new HashMap<>(pieces);
-
-        Piece movingPiece = newPieces.get(from);
-
-        if (movingPiece.getMovement().isMoveValid(from, to) && isSquareEmpty(to)) {
-            newPieces.remove(from); // TODO: comprobar si esto es valido
-            newPieces.put(to, movingPiece);
-        }
-
-        return new Board(Map.copyOf(newPieces));
+        newPieces.remove(from);
+        newPieces.put(to, piece);
+        return new Board(newPieces);
     }
 
-    public boolean isSquareEmpty(Square to) {
-        return this.pieces.get(to) == null;
+    private boolean isPathClear(Piece piece, Square from, Square to) {
+        if (piece.isKnight()) return true;
+        // TODO: Esta cosa y DRY en move()
+    }
+
+    private boolean canOccupySquare(Piece fromPiece, Square to) {
+        Piece toPiece = this.pieces.get(to);
+        return toPiece == null || (!toPiece.isKing() && fromPiece.isWhite() != toPiece.isWhite());
     }
 
     public Board(Map<Square, Piece> pieces) {
         this.pieces = Map.copyOf(pieces);
-    }
-
-    Piece pieceAt(File file, Rank rank) {
-        return pieceAt(new Square(file, rank));
-    }
-
-    Piece pieceAt(String square) {
-        return null;
-    }
-
-    private Piece pieceAt(Square square) {
-        return null;
     }
 
     public Map<Square, Piece> pieces() {

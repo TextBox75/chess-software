@@ -38,4 +38,21 @@ public enum Piece {
     public PieceMovement getMovement() {
         return movement;
     }
+
+    public boolean isKing() {
+        return this.name().endsWith("King");
+    }
+
+    public boolean isKnight() {
+        return this.name().endsWith("Knight");
+    }
+
+    public boolean isWhite() {
+        return this.name().startsWith("White");
+    }
+
+    public boolean isBlack() {
+        return this.name().startsWith("Black");
+    }
+
 }

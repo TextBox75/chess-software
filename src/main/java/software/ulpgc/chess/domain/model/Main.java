@@ -6,9 +6,9 @@ import static software.ulpgc.chess.domain.model.Rank.*;
 public class Main {
     static void main() {
         Board gameBoard = Board.initial();
-        gameBoard.move(new Square(A, R7), new Square(D, R4));
+        gameBoard.move(new Square(C, R8), new Square(A, R6));
 
-        // TODO: comportamiento de fichas (si es valido geometricamente y si es valido en tablero)
+        // TODO: conquistas
         // TODO: estado de juego
     }
 }
