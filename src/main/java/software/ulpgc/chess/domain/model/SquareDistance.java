@@ -1,6 +1,21 @@
 package software.ulpgc.chess.domain.model;
 
-public record SquareDistance(int dx, int dy) {
+public class SquareDistance {
+    private final int dx;
+    private final int dy;
+
+    public SquareDistance(Square from, Square to) {
+        dx = to.file().ordinal() - from.file().ordinal();
+        dy = to.rank().ordinal() - from.rank().ordinal();
+    }
+
+    public int dx() {
+        return dx;
+    }
+
+    public int dy() {
+        return dy;
+    }
 
     public int absX() {
         return Math.abs(dx);

@@ -7,18 +7,18 @@ import java.util.Arrays;
 import static software.ulpgc.chess.domain.model.StandardPieceMovement.*;
 
 public enum Piece {
-    WhitePawn('P', Pawn),
-    WhiteKnight('N', Knight),
-    WhiteBishop('B', Bishop),
-    WhiteRook('R', Rook),
-    WhiteQueen('Q', Queen),
-    WhiteKing('K', King),
-    BlackPawn('p', Pawn),
-    BlackKnight('n', Knight),
-    BlackBishop('b', Bishop),
-    BlackRook('r', Rook),
-    BlackQueen('q', Queen),
-    BlackKing('k', King);
+    WhitePawn('P', WhitePawnMovement),
+    WhiteKnight('N', KnightMovement),
+    WhiteBishop('B', BishopMovement),
+    WhiteRook('R', RookMovement),
+    WhiteQueen('Q', QueenMovement),
+    WhiteKing('K', KingMovement),
+    BlackPawn('p', BlackPawnMovement),
+    BlackKnight('n', KnightMovement),
+    BlackBishop('b', BishopMovement),
+    BlackRook('r', RookMovement),
+    BlackQueen('q', QueenMovement),
+    BlackKing('k', KingMovement);
 
     private final char fenSymbol;
     private final PieceMovement movement;

@@ -8,8 +8,11 @@ import static software.ulpgc.chess.domain.model.File.*;
 import static software.ulpgc.chess.domain.model.Rank.*;
 import static software.ulpgc.chess.domain.model.Piece.*;
 
-public final class Board {
-    private final Map<Square, Piece> pieces;
+public record Board(Map<Square, Piece> pieces) {
+
+    public Board(Map<Square, Piece> pieces) {
+        this.pieces = Map.copyOf(pieces);
+    }
 
     public static Board initial() {
         return new Board(initialMap());
@@ -60,11 +63,7 @@ public final class Board {
     public Board move(Square from, Square to) {
         Piece piece = pieces.get(from);
 
-        if (!piece.getMovement().isMoveValid(from, to)) return new Board(pieces);
-
-        if (!isPathClear(piece, from, to)) return new Board(pieces);
-
-        if (!canOccupySquare(piece, to)) return new Board(pieces);
+        if (!isMoveLegal(piece, from, to)) return new Board(pieces);
 
         Map<Square, Piece> newPieces = new HashMap<>(pieces);
         newPieces.remove(from);
@@ -72,21 +71,41 @@ public final class Board {
         return new Board(newPieces);
     }
 
+    private boolean isMoveLegal(Piece piece, Square from, Square to) {
+        return (piece != null &&
+                piece.getMovement().isMoveValid(from, to) &&
+                isPathClear(piece, from, to) &&
+                canOccupySquare(piece, to));
+    }
+
     private boolean isPathClear(Piece piece, Square from, Square to) {
         if (piece.isKnight()) return true;
-        // TODO: Esta cosa y DRY en move()
+
+        SquareDistance dist = new SquareDistance(from, to);
+
+        int stepX = Integer.signum(dist.dx());
+        int stepY = Integer.signum(dist.dy());
+
+        int currentFile = from.file().ordinal() + stepX;
+        int currentRank = from.rank().ordinal() + stepY;
+
+        int goalFile = to.file().ordinal();
+        int goalRank = to.rank().ordinal();
+
+        while (currentFile != goalFile || currentRank != goalRank) {
+            Square currentSquare = new Square(File.values()[currentFile], Rank.values()[currentRank]);
+
+            if (pieces.containsKey(currentSquare)) return false;
+
+            currentFile += stepX;
+            currentRank += stepY;
+        }
+
+        return true;
     }
 
     private boolean canOccupySquare(Piece fromPiece, Square to) {
         Piece toPiece = this.pieces.get(to);
         return toPiece == null || (!toPiece.isKing() && fromPiece.isWhite() != toPiece.isWhite());
-    }
-
-    public Board(Map<Square, Piece> pieces) {
-        this.pieces = Map.copyOf(pieces);
-    }
-
-    public Map<Square, Piece> pieces() {
-        return pieces;
     }
 }
