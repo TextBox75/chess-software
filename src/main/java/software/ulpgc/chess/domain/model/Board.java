@@ -2,7 +2,6 @@ package software.ulpgc.chess.domain.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import static software.ulpgc.chess.domain.model.File.*;
 import static software.ulpgc.chess.domain.model.Rank.*;
@@ -80,23 +79,20 @@ public record Board(Map<Square, Piece> pieces) {
 
     private boolean isPathClear(Piece piece, Square from, Square to) {
         if (piece.isKnight()) return true;
+        return isPathClear(from, to);
+    }
 
-        SquareDistance dist = new SquareDistance(from, to);
+    private boolean isPathClear(Square from, Square to) {
+        SquareDistance distance = new SquareDistance(from, to);
 
-        int stepX = Integer.signum(dist.dx());
-        int stepY = Integer.signum(dist.dy());
+        int stepX = Integer.signum(distance.X());
+        int stepY = Integer.signum(distance.Y());
 
         int currentFile = from.file().ordinal() + stepX;
         int currentRank = from.rank().ordinal() + stepY;
 
-        int goalFile = to.file().ordinal();
-        int goalRank = to.rank().ordinal();
-
-        while (currentFile != goalFile || currentRank != goalRank) {
-            Square currentSquare = new Square(File.values()[currentFile], Rank.values()[currentRank]);
-
-            if (pieces.containsKey(currentSquare)) return false;
-
+        while (currentFile != to.file().ordinal() || currentRank != to.rank().ordinal()) {
+            if (pieces.containsKey(Square.of(currentFile, currentRank))) return false;
             currentFile += stepX;
             currentRank += stepY;
         }
@@ -107,5 +103,32 @@ public record Board(Map<Square, Piece> pieces) {
     private boolean canOccupySquare(Piece fromPiece, Square to) {
         Piece toPiece = this.pieces.get(to);
         return toPiece == null || (!toPiece.isKing() && fromPiece.isWhite() != toPiece.isWhite());
+    }
+
+    private boolean isInCheck(Side side) {
+        Square kingSquare = findKingSquare(side);
+        Side enemySide = side.opposite();
+        return isSquareAttacked(kingSquare, enemySide);
+    }
+
+    private Square findKingSquare(Side side) {
+        return pieces.entrySet().stream()
+                .filter(entry -> entry.getValue().isKing()
+                        && (entry.getValue().isWhite() == (side == Side.WHITE)))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Rey no encontrado en el tablero"));
+    }
+
+    private boolean isSquareAttacked(Square targetSquare, Side attackingSide) {
+        return pieces.entrySet().stream()
+                .filter(entry -> entry.getValue().isWhite() == (attackingSide == Side.WHITE))
+                .anyMatch(entry -> {
+                    Square originSquare = entry.getKey();
+                    Piece piece = entry.getValue();
+                    // Ojo: para el peón, atacar una casilla implica avance diagonal
+                    return isPathClear(piece, originSquare, targetSquare)
+                            && piece.getMovement().isMoveValid(originSquare, targetSquare);
+                });
     }
 }

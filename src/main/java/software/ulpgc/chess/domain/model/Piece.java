@@ -50,9 +50,4 @@ public enum Piece {
     public boolean isWhite() {
         return this.name().startsWith("White");
     }
-
-    public boolean isBlack() {
-        return this.name().startsWith("Black");
-    }
-
 }

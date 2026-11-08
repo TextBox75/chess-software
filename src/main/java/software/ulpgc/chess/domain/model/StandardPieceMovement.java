@@ -8,7 +8,8 @@ public enum StandardPieceMovement implements PieceMovement {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance distance = new SquareDistance(from, to);
-            return (distance.absX() == 1 && distance.absY() == 2) || (distance.absX() == 2 && distance.absY() == 1);
+            return (distance.absX() == 1 && distance.absY() == 2) ||
+                    (distance.absX() == 2 && distance.absY() == 1);
         }
     },
 
@@ -48,9 +49,9 @@ public enum StandardPieceMovement implements PieceMovement {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
-            if (dist.dx() == 0 && dist.dy() == 1) return true;
+            if (dist.X() == 0 && dist.Y() == 1) return true;
 
-            if (dist.dx() == 0 && dist.dy() == 2) {
+            if (dist.X() == 0 && dist.Y() == 2) {
                 return from.rank() == Rank.R2;
             }
 
@@ -63,9 +64,9 @@ public enum StandardPieceMovement implements PieceMovement {
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
 
-            if (dist.dx() == 0 && dist.dy() == -1) return true;
+            if (dist.X() == 0 && dist.Y() == -1) return true;
 
-            if (dist.dx() == 0 && dist.dy() == -2) {
+            if (dist.X() == 0 && dist.Y() == -2) {
                 return from.rank() == Rank.R7;
             }
 
