@@ -1,5 +1,7 @@
 package software.ulpgc.chess.domain.model;
 
+import static software.ulpgc.chess.domain.model.GameStatus.*;
+
 public record Game(
         Board board,
         Side side,
@@ -16,21 +18,28 @@ public record Game(
     }
 
     public Game play(Square from, Square to) {
+        GameStatus currentStatus = checkGameStatus();
+        if (currentStatus == FINISHED) return this; // Retorna la misma instancia de game pq el juego ya ha acabado
 
-        if (canGameFinish()) return this;
+        // TODO: aquí se deberá comprobar los diferentes game states
 
         return new Game(
                 this.board.move(from, to),
                 this.side.opposite(),
-                GameStatus.PLAYING,
+                currentStatus,
                 ChessClock.initial()
         );
     }
 
-    private boolean canGameFinish() {
+    private GameStatus checkGameStatus() {
         Side oppositeSide = this.side.opposite();
         boolean inCheck = this.board.isInCheck(oppositeSide);
-        if (inCheck && !this.board.hasLegalMove(oppositeSide)) return false;
-        return true;
+
+        if (inCheck) {
+            if (!this.board.hasLegalMove(oppositeSide)) return FINISHED;
+            return CHECK;
+        }
+
+        return PLAYING;
     }
 }

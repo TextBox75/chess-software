@@ -1,7 +1,6 @@
 package software.ulpgc.chess.domain.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static software.ulpgc.chess.domain.model.File.*;
 import static software.ulpgc.chess.domain.model.Rank.*;
@@ -127,26 +126,42 @@ public record Board(Map<Square, Piece> pieces) {
                     Square originSquare = entry.getKey();
                     Piece piece = entry.getValue();
                     // Ojo: para el peón, atacar una casilla implica avance diagonal
-                    return isPieceAttackingSquare(piece, originSquare, targetSquare);
+                    return piece.getMovement().isMoveValid(originSquare, targetSquare)
+                            && isPathClear(originSquare, targetSquare);
                 });
     }
 
     public boolean hasLegalMove(Side attackedSide) {
-        // Comprobar si se puede ocupar el cuadrado que pone en jaque al rey
-        Square kingSquare = findKingSquare(attackedSide);
-        Side enemySide = attackedSide.opposite();
-        return !pieces.entrySet().stream()
-                // 1. Filtrar únicamente piezas del bando atacante
-                .filter(entry -> entry.getValue().isWhite() == (enemySide == Side.WHITE))
-                // 2. Comprobar si la pieza amenaza directamente al rey
-                .filter(entry -> isPieceAttackingSquare(entry.getValue(), entry.getKey(), kingSquare))
+        List<Square> attackedSideSquares = pieces.entrySet().stream()
+                .filter(entry -> entry.getValue().isWhite() == (attackedSide == Side.WHITE))
                 .map(Map.Entry::getKey)
-                .toList()
-                .isEmpty();
+                .toList();
+
+        return hasLegalMove(attackedSide, attackedSideSquares);
     }
 
-    private boolean isPieceAttackingSquare(Piece piece, Square from, Square target) {
-        return piece.getMovement().isMoveValid(from, target)
-                && isPathClear(piece, from, target);
+    private boolean hasLegalMove(Side attackedSide, List<Square> attackedSideSquares) {
+        for (Square square : attackedSideSquares) {
+            return hasLegalMove(attackedSide, square);
+        }
+        return true;
+    }
+
+    private boolean hasLegalMove(Side attackedSide, Square from) {
+        for (Square to : allSquares()) {
+            if (from.equals(to)) continue;
+
+            Board nextBoard = this.move(from, to);
+
+            if (!nextBoard.equals(this) && !nextBoard.isInCheck(attackedSide)) return true;
+        }
+
+        return false;
+    }
+
+    private static List<Square> allSquares() {
+        return Arrays.stream(File.values())
+                .flatMap(file -> Arrays.stream(Rank.values()).map(rank -> new Square(file, rank)))
+                .toList();
     }
 }
