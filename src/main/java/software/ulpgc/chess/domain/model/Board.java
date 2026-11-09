@@ -105,7 +105,7 @@ public record Board(Map<Square, Piece> pieces) {
         return toPiece == null || (!toPiece.isKing() && fromPiece.isWhite() != toPiece.isWhite());
     }
 
-    private boolean isInCheck(Side side) {
+    public boolean isInCheck(Side side) {
         Square kingSquare = findKingSquare(side);
         Side enemySide = side.opposite();
         return isSquareAttacked(kingSquare, enemySide);
@@ -127,8 +127,26 @@ public record Board(Map<Square, Piece> pieces) {
                     Square originSquare = entry.getKey();
                     Piece piece = entry.getValue();
                     // Ojo: para el peón, atacar una casilla implica avance diagonal
-                    return isPathClear(piece, originSquare, targetSquare)
-                            && piece.getMovement().isMoveValid(originSquare, targetSquare);
+                    return isPieceAttackingSquare(piece, originSquare, targetSquare);
                 });
+    }
+
+    public boolean hasLegalMove(Side attackedSide) {
+        // Comprobar si se puede ocupar el cuadrado que pone en jaque al rey
+        Square kingSquare = findKingSquare(attackedSide);
+        Side enemySide = attackedSide.opposite();
+        return !pieces.entrySet().stream()
+                // 1. Filtrar únicamente piezas del bando atacante
+                .filter(entry -> entry.getValue().isWhite() == (enemySide == Side.WHITE))
+                // 2. Comprobar si la pieza amenaza directamente al rey
+                .filter(entry -> isPieceAttackingSquare(entry.getValue(), entry.getKey(), kingSquare))
+                .map(Map.Entry::getKey)
+                .toList()
+                .isEmpty();
+    }
+
+    private boolean isPieceAttackingSquare(Piece piece, Square from, Square target) {
+        return piece.getMovement().isMoveValid(from, target)
+                && isPathClear(piece, from, target);
     }
 }

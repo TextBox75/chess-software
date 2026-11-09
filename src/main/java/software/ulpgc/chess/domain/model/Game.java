@@ -2,7 +2,7 @@ package software.ulpgc.chess.domain.model;
 
 public record Game(
         Board board,
-        Side color,
+        Side side,
         GameStatus status,
         ChessClock clock
 ) {
@@ -16,12 +16,21 @@ public record Game(
     }
 
     public Game play(Square from, Square to) {
-        // TODO: aquí, en algún lugar, se ha de implementar la comprobación de jaque-mate
+
+        if (canGameFinish()) return this;
+
         return new Game(
                 this.board.move(from, to),
-                this.color.opposite(),
+                this.side.opposite(),
                 GameStatus.PLAYING,
                 ChessClock.initial()
         );
+    }
+
+    private boolean canGameFinish() {
+        Side oppositeSide = this.side.opposite();
+        boolean inCheck = this.board.isInCheck(oppositeSide);
+        if (inCheck && !this.board.hasLegalMove(oppositeSide)) return false;
+        return true;
     }
 }
