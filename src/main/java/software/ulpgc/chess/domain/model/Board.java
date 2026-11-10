@@ -71,7 +71,7 @@ public record Board(Map<Square, Piece> pieces) {
 
     private boolean isMoveLegal(Piece piece, Square from, Square to) {
         return (piece != null &&
-                piece.getMovement().isMoveValid(from, to) &&
+                piece.getBehaviour().isMoveValid(from, to) &&
                 isPathClear(piece, from, to) &&
                 canOccupySquare(piece, to));
     }
@@ -126,7 +126,7 @@ public record Board(Map<Square, Piece> pieces) {
                     Square originSquare = entry.getKey();
                     Piece piece = entry.getValue();
                     // Ojo: para el peón, atacar una casilla implica avance diagonal
-                    return piece.getMovement().isMoveValid(originSquare, targetSquare)
+                    return piece.getBehaviour().isMoveValid(originSquare, targetSquare)
                             && isPathClear(originSquare, targetSquare);
                 });
     }
@@ -142,9 +142,9 @@ public record Board(Map<Square, Piece> pieces) {
 
     private boolean hasLegalMove(Side attackedSide, List<Square> attackedSideSquares) {
         for (Square square : attackedSideSquares) {
-            return hasLegalMove(attackedSide, square);
+            if (hasLegalMove(attackedSide, square)) return true;
         }
-        return true;
+        return false;
     }
 
     private boolean hasLegalMove(Side attackedSide, Square from) {

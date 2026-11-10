@@ -18,25 +18,24 @@ public record Game(
     }
 
     public Game play(Square from, Square to) {
-        GameStatus currentStatus = checkGameStatus();
-        if (currentStatus == FINISHED) return this; // Retorna la misma instancia de game pq el juego ya ha acabado
+        Board nextBoard = this.board.move(from, to);
 
-        // TODO: aquí se deberá comprobar los diferentes game states
+        if (nextBoard.equals(this.board)) return this;
 
         return new Game(
-                this.board.move(from, to),
+                nextBoard,
                 this.side.opposite(),
-                currentStatus,
+                checkGameStatus(nextBoard),
                 ChessClock.initial()
         );
     }
 
-    private GameStatus checkGameStatus() {
+    private GameStatus checkGameStatus(Board boardToCheck) {
         Side oppositeSide = this.side.opposite();
-        boolean inCheck = this.board.isInCheck(oppositeSide);
+        boolean inCheck = boardToCheck.isInCheck(oppositeSide);
 
         if (inCheck) {
-            if (!this.board.hasLegalMove(oppositeSide)) return FINISHED;
+            if (!boardToCheck.hasLegalMove(oppositeSide)) return CHECKMATE;
             return CHECK;
         }
 

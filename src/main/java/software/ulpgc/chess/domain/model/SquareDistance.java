@@ -32,4 +32,8 @@ public class SquareDistance {
     public boolean isDiagonal() {
         return absX() == absY() && absX() != 0;
     }
+
+    public boolean isVertical() {
+        return absX() == 0 && absY() > 0;
+    }
 }

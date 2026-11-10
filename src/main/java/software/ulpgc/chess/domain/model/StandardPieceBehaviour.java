@@ -1,10 +1,10 @@
 package software.ulpgc.chess.domain.model;
 
-import software.ulpgc.chess.architecture.ports.PieceMovement;
+import software.ulpgc.chess.architecture.ports.PieceBehaviour;
 
-public enum StandardPieceMovement implements PieceMovement {
+public enum StandardPieceBehaviour implements PieceBehaviour {
 
-    KnightMovement {
+    KnightBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance distance = new SquareDistance(from, to);
@@ -13,7 +13,7 @@ public enum StandardPieceMovement implements PieceMovement {
         }
     },
 
-    BishopMovement {
+    BishopBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance distance = new SquareDistance(from, to);
@@ -21,7 +21,7 @@ public enum StandardPieceMovement implements PieceMovement {
         }
     },
 
-    RookMovement {
+    RookBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance distance = new SquareDistance(from, to);
@@ -29,7 +29,7 @@ public enum StandardPieceMovement implements PieceMovement {
         }
     },
 
-    QueenMovement {
+    QueenBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance distance = new SquareDistance(from, to);
@@ -37,7 +37,7 @@ public enum StandardPieceMovement implements PieceMovement {
         }
     },
 
-    KingMovement {
+    KingBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance distance = new SquareDistance(from, to);
@@ -45,32 +45,31 @@ public enum StandardPieceMovement implements PieceMovement {
         }
     },
 
-    WhitePawnMovement {
+    WhitePawnBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
-            if (dist.X() == 0 && dist.Y() == 1) return true;
+            return dist.isVertical() && dist.Y() > 0 && dist.Y() <= (from.rank() == Rank.R2 ? 2 : 1);
+        }
 
-            if (dist.X() == 0 && dist.Y() == 2) {
-                return from.rank() == Rank.R2;
-            }
-
-            return false;
+        @Override
+        public boolean isAttackValid(Square from, Square to) {
+            SquareDistance dist = new SquareDistance(from, to);
+            return dist.isDiagonal() && dist.Y() == 1;
         }
     },
 
-    BlackPawnMovement {
+    BlackPawnBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
+            return dist.isVertical() && dist.Y() < 0 && dist.Y() >= (from.rank() == Rank.R7 ? -2 : -1);
+        }
 
-            if (dist.X() == 0 && dist.Y() == -1) return true;
-
-            if (dist.X() == 0 && dist.Y() == -2) {
-                return from.rank() == Rank.R7;
-            }
-
-            return false;
+        @Override
+        public boolean isAttackValid(Square from, Square to) {
+            SquareDistance dist = new SquareDistance(from, to);
+            return dist.isDiagonal() && dist.Y() == -1;
         }
     }
 }
