@@ -29,16 +29,17 @@ class CheckmateTest {
                     Square.of("f7"), BlackPawn,
                     Square.of("g7"), BlackPawn,
                     Square.of("h7"), BlackPawn,
-                    Square.of("a1"), WhiteKing
+                    Square.of("g1"), WhiteKing
             ));
 
             Game game = new Game(board, Side.WHITE, PLAYING, ChessClock.initial());
 
-            // La torre blanca desciende a la octava fila
+            // La torre blanca penetra a la octava fila dando jaque en la fila trasera
             Game afterMove = game.play(Square.of("d1"), Square.of("d8"));
 
             assertEquals(CHECKMATE, afterMove.status(), "Debe ser Jaque Mate");
-            // Un movimiento posterior no debe cambiar el estado
+
+            // Un movimiento posterior con la partida ya finalizada no debe alterar el estado
             Game afterOver = afterMove.play(Square.of("g8"), Square.of("h8"));
             assertEquals(afterMove, afterOver);
         }
@@ -52,6 +53,7 @@ class CheckmateTest {
                     Square.of("h5"), WhiteQueen,
                     Square.of("c4"), WhiteBishop,
                     Square.of("e8"), BlackKing,
+                    Square.of("d8"), BlackQueen, // <-- Bloquea la casilla de escape d8
                     Square.of("e1"), WhiteKing
             ));
 
@@ -87,19 +89,22 @@ class CheckmateTest {
         @Test
         @DisplayName("No es mate si una pieza aliada puede capturar a la pieza atacante")
         void should_be_check_not_mate_when_attacker_can_be_captured() {
-            // Torre blanca ataca al rey negro en d8, pero un alfil negro en g5 puede comer a la torre
+            // Torre blanca entra a d8 atacando al rey negro en e8, pero el alfil en c7 (o g6) puede capturarla
+            // Si queremos mantener alfil en g5 comiendo en d8: distancia de g5 a d8 es diagonal de 3 pasos (g5 -> f6 -> e7 -> d8)
+            // Entonces el rey negro debe estar por ejemplo en e8 o d7 para recibir el jaque sin estar en la casilla de llegada.
             Board board = new Board(Map.of(
                     Square.of("d1"), WhiteRook,
-                    Square.of("d8"), BlackKing,
-                    Square.of("g5"), BlackBishop,
+                    Square.of("e8"), BlackKing,   // Rey en e8 (no en d8)
+                    Square.of("g5"), BlackBishop, // Ataca la diagonal d8-g5 (d8, e7, f6, g5)
                     Square.of("a1"), WhiteKing
             ));
 
             Game game = new Game(board, Side.WHITE, PLAYING, ChessClock.initial());
 
+            // La torre mueve a d8 dando jaque horizontal al rey en e8
             Game afterMove = game.play(Square.of("d1"), Square.of("d8"));
 
-            assertEquals(CHECK, afterMove.status(), "El alfil negro puede comer en d8 salvando el mate");
+            assertEquals(CHECK, afterMove.status(), "El alfil negro en g5 puede comer en d8 salvando el mate");
         }
 
         @Test

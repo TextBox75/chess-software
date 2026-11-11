@@ -20,7 +20,7 @@ public record Game(
     public Game play(Square from, Square to) {
         Board nextBoard = this.board.move(from, to);
 
-        if (nextBoard.equals(this.board)) return this;
+        if (nextBoard.equals(this.board) || this.status == CHECKMATE) return this;
 
         return new Game(
                 nextBoard,

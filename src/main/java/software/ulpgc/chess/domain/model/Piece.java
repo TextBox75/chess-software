@@ -21,11 +21,11 @@ public enum Piece {
     BlackKing('k', KingBehaviour);
 
     private final char fenSymbol;
-    private final PieceBehaviour Behaviour;
+    private final PieceBehaviour behaviour;
 
     Piece(char fenSymbol, PieceBehaviour Behaviour) {
         this.fenSymbol = fenSymbol;
-        this.Behaviour = Behaviour;
+        this.behaviour = Behaviour;
     }
 
     public static Piece fromFenSymbol(char symbol) {
@@ -36,7 +36,7 @@ public enum Piece {
     }
 
     public PieceBehaviour getBehaviour() {
-        return Behaviour;
+        return behaviour;
     }
 
     public boolean isKing() {
@@ -49,5 +49,9 @@ public enum Piece {
 
     public boolean isWhite() {
         return this.name().startsWith("White");
+    }
+
+    public boolean isOfSide(Side side) {
+        return this.isWhite() == (side == Side.WHITE);
     }
 }

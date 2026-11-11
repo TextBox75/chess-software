@@ -61,7 +61,7 @@ public record Board(Map<Square, Piece> pieces) {
     public Board move(Square from, Square to) {
         Piece piece = pieces.get(from);
 
-        if (!isMoveLegal(piece, from, to)) return new Board(pieces);
+        if (piece == null || !isMoveLegal(piece, from, to)) return new Board(pieces);
 
         Map<Square, Piece> newPieces = new HashMap<>(pieces);
         newPieces.remove(from);
@@ -70,10 +70,15 @@ public record Board(Map<Square, Piece> pieces) {
     }
 
     private boolean isMoveLegal(Piece piece, Square from, Square to) {
-        return (piece != null &&
-                piece.getBehaviour().isMoveValid(from, to) &&
-                isPathClear(piece, from, to) &&
-                canOccupySquare(piece, to));
+        Piece target = pieces.get(to);
+
+        boolean isEnemyTarget = target != null && target.isWhite() != piece.isWhite();
+
+        boolean isKinematicValid = isEnemyTarget
+                ? piece.getBehaviour().isAttackValid(from, to)
+                : piece.getBehaviour().isMoveValid(from, to);
+
+        return isKinematicValid && isPathClear(piece, from, to) && canOccupySquare(piece, to);
     }
 
     private boolean isPathClear(Piece piece, Square from, Square to) {
@@ -112,8 +117,7 @@ public record Board(Map<Square, Piece> pieces) {
 
     private Square findKingSquare(Side side) {
         return pieces.entrySet().stream()
-                .filter(entry -> entry.getValue().isKing()
-                        && (entry.getValue().isWhite() == (side == Side.WHITE)))
+                .filter(entry -> entry.getValue().isKing() && (entry.getValue().isOfSide(side)))
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Rey no encontrado en el tablero"));
@@ -121,22 +125,21 @@ public record Board(Map<Square, Piece> pieces) {
 
     private boolean isSquareAttacked(Square targetSquare, Side attackingSide) {
         return pieces.entrySet().stream()
-                .filter(entry -> entry.getValue().isWhite() == (attackingSide == Side.WHITE))
+                .filter(entry -> entry.getValue().isOfSide(attackingSide))
                 .anyMatch(entry -> {
                     Square originSquare = entry.getKey();
                     Piece piece = entry.getValue();
-                    // Ojo: para el peón, atacar una casilla implica avance diagonal
-                    return piece.getBehaviour().isMoveValid(originSquare, targetSquare)
-                            && isPathClear(originSquare, targetSquare);
+
+                    return piece.getBehaviour().isAttackValid(originSquare, targetSquare)
+                            && isPathClear(piece, originSquare, targetSquare);
                 });
     }
 
     public boolean hasLegalMove(Side attackedSide) {
         List<Square> attackedSideSquares = pieces.entrySet().stream()
-                .filter(entry -> entry.getValue().isWhite() == (attackedSide == Side.WHITE))
+                .filter(entry -> entry.getValue().isOfSide(attackedSide))
                 .map(Map.Entry::getKey)
                 .toList();
-
         return hasLegalMove(attackedSide, attackedSideSquares);
     }
 
