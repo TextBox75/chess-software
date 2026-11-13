@@ -11,10 +11,11 @@ public class Main {
     static void main() {
         Game game = Game.initial();
         game.play(Square.from(A, Rank.R2), Square.from(B, Rank.R3));
-        // TODO: excepción del peón
-        // TODO: jaque-mates
 
-        // TODO: reloj
+        // TODO: enroque
+
         // TODO: clase de room
+        // TODO: promociones (al completo, se necesita interfaz primero)
+        // TODO: reloj
     }
 }

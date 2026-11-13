@@ -51,7 +51,20 @@ public enum Piece {
         return this.name().startsWith("White");
     }
 
+    private boolean isPawn() {
+        return this.name().endsWith("Pawn");
+    }
+
     public boolean isOfSide(Side side) {
         return this.isWhite() == (side == Side.WHITE);
+    }
+
+    public boolean canPromote(Rank rank) {
+        if (!this.isPawn()) return false;
+        return this.isWhite() ? rank == Rank.R8 : rank == Rank.R1;
+    }
+
+    public Piece defaultPromote() {
+        return this.isWhite() ? WhiteQueen : BlackQueen;
     }
 }

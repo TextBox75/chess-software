@@ -59,10 +59,19 @@ public record Board(Map<Square, Piece> pieces) {
     }
 
     public Board move(Square from, Square to) {
+
         Piece piece = pieces.get(from);
 
         if (piece == null || !isMoveLegal(piece, from, to)) return new Board(pieces);
 
+        if (piece.canPromote(to.rank())) {
+            piece = piece.defaultPromote();
+        }
+
+        return move(piece, from, to);
+    }
+
+    private Board move(Piece piece, Square from, Square to) {
         Map<Square, Piece> newPieces = new HashMap<>(pieces);
         newPieces.remove(from);
         newPieces.put(to, piece);
