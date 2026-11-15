@@ -55,6 +55,10 @@ public enum Piece {
         return this.name().endsWith("Pawn");
     }
 
+    public boolean isRook() {
+        return this.name().endsWith("Rook");
+    }
+
     public boolean isOfSide(Side side) {
         return this.isWhite() == (side == Side.WHITE);
     }

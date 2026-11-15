@@ -6,10 +6,15 @@ import static software.ulpgc.chess.domain.model.File.*;
 import static software.ulpgc.chess.domain.model.Rank.*;
 import static software.ulpgc.chess.domain.model.Piece.*;
 
-public record Board(Map<Square, Piece> pieces) {
+public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
 
     public Board(Map<Square, Piece> pieces) {
+        this(pieces, CastlingRights.initial());
+    }
+
+    public Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
         this.pieces = Map.copyOf(pieces);
+        this.castlingRights = castlingRights;
     }
 
     public static Board initial() {
@@ -17,7 +22,8 @@ public record Board(Map<Square, Piece> pieces) {
     }
 
     public static Map<Square, Piece> initialMap() {
-        Map<Square, Piece> Initial = Map.ofEntries(
+
+        return Map.ofEntries(
                 Map.entry(new Square(A, R1), WhiteRook),
                 Map.entry(new Square(B, R1), WhiteKnight),
                 Map.entry(new Square(C, R1), WhiteBishop),
@@ -54,15 +60,13 @@ public record Board(Map<Square, Piece> pieces) {
                 Map.entry(new Square(G, R8), BlackKnight),
                 Map.entry(new Square(H, R8), BlackRook)
         );
-
-        return Initial;
     }
 
     public Board move(Square from, Square to) {
 
         Piece piece = pieces.get(from);
 
-        if (piece == null || !isMoveLegal(piece, from, to)) return new Board(pieces);
+        if (piece == null || !isMoveLegal(piece, from, to)) return new Board(pieces, this.castlingRights);
 
         if (piece.canPromote(to.rank())) {
             piece = piece.defaultPromote();
@@ -75,10 +79,23 @@ public record Board(Map<Square, Piece> pieces) {
         Map<Square, Piece> newPieces = new HashMap<>(pieces);
         newPieces.remove(from);
         newPieces.put(to, piece);
-        return new Board(newPieces);
+
+        if (isCastlingMove(piece, from, to)) {
+            boolean isKingSide = to.file().ordinal() > from.file().ordinal();
+            Square rookOrigin = new Square(isKingSide ? H : A, from.rank());
+            Square rookTarget = new Square(isKingSide ? F : D, from.rank());
+            Piece rook = newPieces.remove(rookOrigin);
+            newPieces.put(rookTarget, rook);
+        }
+
+        return new Board(newPieces, castlingRights.update(from, to, piece));
     }
 
     private boolean isMoveLegal(Piece piece, Square from, Square to) {
+        if (isCastlingMove(piece, from, to)) {
+            return isCastlingLegal(piece, from, to);
+        }
+
         Piece target = pieces.get(to);
 
         boolean isEnemyTarget = target != null && target.isWhite() != piece.isWhite();
@@ -88,6 +105,38 @@ public record Board(Map<Square, Piece> pieces) {
                 : piece.getBehaviour().isMoveValid(from, to);
 
         return isKinematicValid && isPathClear(piece, from, to) && canOccupySquare(piece, to);
+    }
+
+    private boolean isCastlingMove(Piece piece, Square from, Square to) {
+        if (!piece.isKing()) return false;
+        Square expectedOrigin = piece.isWhite() ? new Square(E, R1) : new Square(E, R8);
+        if (!from.equals(expectedOrigin)) return false;
+
+        SquareDistance distance = new SquareDistance(from, to);
+        return Math.abs(distance.X()) == 2 && distance.Y() == 0;
+    }
+
+    private boolean isCastlingLegal(Piece king, Square from, Square to) {
+        Side side = king.isWhite() ? Side.WHITE : Side.BLACK;
+        boolean isKingSide = to.file().ordinal() > from.file().ordinal(); // true = corto (hacia H), false = largo (hacia A)
+
+        if (!castlingRights.canCastle(side, isKingSide)) return false;
+
+        // 1. Verificar que la torre aliada está en su esquina
+        Square rookSquare = new Square(isKingSide ? H : A, from.rank());
+        Piece rook = pieces.get(rookSquare);
+        if (rook == null || !rook.isOfSide(side) || !rook.isRook()) return false;
+
+        // 2. Verificar que no hay piezas entre el rey y la torre
+        if (!isPathClear(from, rookSquare)) return false;
+
+        // 3. Verificar que ni el origen, ni el paso intermedio, ni el destino están atacados
+        Side enemy = side.opposite();
+        Square passingSquare = new Square(isKingSide ? F : D, from.rank());
+
+        return !isSquareAttacked(from, enemy)
+                && !isSquareAttacked(passingSquare, enemy)
+                && !isSquareAttacked(to, enemy);
     }
 
     private boolean isPathClear(Piece piece, Square from, Square to) {
