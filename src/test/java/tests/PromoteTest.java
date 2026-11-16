@@ -43,7 +43,7 @@ class PromoteTest {
                 Square.of("e8"), BlackKing
         ));
 
-        Board afterMove = board.move(Square.of("a7"), Square.of("a8"));
+        Board afterMove = MoveValidator.move(board, Square.of("a7"), Square.of("a8"));
 
         assertEquals(WhiteQueen, afterMove.pieces().get(Square.of("a8")));
         assertNull(afterMove.pieces().get(Square.of("a7")));
@@ -58,7 +58,7 @@ class PromoteTest {
                 Square.of("e8"), BlackKing
         ));
 
-        Board afterMove = board.move(Square.of("h2"), Square.of("h1"));
+        Board afterMove = MoveValidator.move(board, Square.of("h2"), Square.of("h1"));
 
         assertEquals(BlackQueen, afterMove.pieces().get(Square.of("h1")));
         assertNull(afterMove.pieces().get(Square.of("h2")));
@@ -74,7 +74,7 @@ class PromoteTest {
                 Square.of("e8"), BlackKing
         ));
 
-        Board afterCapture = board.move(Square.of("b7"), Square.of("c8"));
+        Board afterCapture = MoveValidator.move(board, Square.of("b7"), Square.of("c8"));
 
         assertEquals(WhiteQueen, afterCapture.pieces().get(Square.of("c8")));
         assertNull(afterCapture.pieces().get(Square.of("b7")));

@@ -12,7 +12,7 @@ public class Main {
         Game game = Game.initial();
         game.play(Square.from(A, Rank.R2), Square.from(B, Rank.R3));
 
-        // TODO: patrón de static
+        // TODO: que game coordine el board con los movimientos
         // TODO: enroque
         // TODO: en passant
 

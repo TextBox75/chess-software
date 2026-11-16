@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDirFactory;
 import software.ulpgc.chess.domain.model.Board;
+import software.ulpgc.chess.domain.model.MoveValidator;
 import software.ulpgc.chess.domain.model.Square;
 import software.ulpgc.chess.domain.model.StandardBoardFactory;
 
@@ -44,7 +45,7 @@ class BoardMoveTest {
             Square from = Square.of("e2");
             Square to = Square.of("e4");
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertFalse(nextBoard.pieces().containsKey(from), "E2 debe quedar vacía");
             assertEquals(WhitePawn, nextBoard.pieces().get(to), "E4 debe tener el peón blanco");
@@ -57,7 +58,7 @@ class BoardMoveTest {
             Square from = Square.of("d7");
             Square to = Square.of("d5");
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertFalse(nextBoard.pieces().containsKey(from));
             assertEquals(BlackPawn, nextBoard.pieces().get(to));
@@ -70,7 +71,7 @@ class BoardMoveTest {
             Square from = Square.of("b1");
             Square to = Square.of("c3");
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertFalse(nextBoard.pieces().containsKey(from));
             assertEquals(WhiteKnight, nextBoard.pieces().get(to));
@@ -84,7 +85,7 @@ class BoardMoveTest {
             Square from = Square.of("a1");
             Square to = Square.of("a3");
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhiteRook, nextBoard.pieces().get(from));
             assertNull(nextBoard.pieces().get(to));
@@ -101,14 +102,14 @@ class BoardMoveTest {
             Square center = Square.of("d4");
             Board board = new Board(Map.of(center, WhiteQueen));
 
-            assertNotNull(board.move(center, Square.of("d8")).pieces().get(Square.of("d8")), "Norte");
-            assertNotNull(board.move(center, Square.of("d1")).pieces().get(Square.of("d1")), "Sur");
-            assertNotNull(board.move(center, Square.of("h4")).pieces().get(Square.of("h4")), "Este");
-            assertNotNull(board.move(center, Square.of("a4")).pieces().get(Square.of("a4")), "Oeste");
-            assertNotNull(board.move(center, Square.of("g7")).pieces().get(Square.of("g7")), "Noreste");
-            assertNotNull(board.move(center, Square.of("a7")).pieces().get(Square.of("a7")), "Noroeste");
-            assertNotNull(board.move(center, Square.of("g1")).pieces().get(Square.of("g1")), "Sureste");
-            assertNotNull(board.move(center, Square.of("a1")).pieces().get(Square.of("a1")), "Suroeste");
+            assertNotNull(MoveValidator.move(board, center, Square.of("d8")).pieces().get(Square.of("d8")), "Norte");
+            assertNotNull(MoveValidator.move(board, center, Square.of("d1")).pieces().get(Square.of("d1")), "Sur");
+            assertNotNull(MoveValidator.move(board, center, Square.of("h4")).pieces().get(Square.of("h4")), "Este");
+            assertNotNull(MoveValidator.move(board, center, Square.of("a4")).pieces().get(Square.of("a4")), "Oeste");
+            assertNotNull(MoveValidator.move(board, center, Square.of("g7")).pieces().get(Square.of("g7")), "Noreste");
+            assertNotNull(MoveValidator.move(board, center, Square.of("a7")).pieces().get(Square.of("a7")), "Noroeste");
+            assertNotNull(MoveValidator.move(board, center, Square.of("g1")).pieces().get(Square.of("g1")), "Sureste");
+            assertNotNull(MoveValidator.move(board, center, Square.of("a1")).pieces().get(Square.of("a1")), "Suroeste");
         }
 
         @Test
@@ -118,7 +119,7 @@ class BoardMoveTest {
             Square invalidTo = Square.of("c5");
             Board board = new Board(Map.of(from, WhiteBishop));
 
-            Board nextBoard = board.move(from, invalidTo);
+            Board nextBoard = MoveValidator.move(board, from, invalidTo);
 
             assertEquals(WhiteBishop, nextBoard.pieces().get(from));
             assertFalse(nextBoard.pieces().containsKey(invalidTo));
@@ -131,7 +132,7 @@ class BoardMoveTest {
             Square invalidTo = Square.of("d4");
             Board board = new Board(Map.of(from, WhiteRook));
 
-            Board nextBoard = board.move(from, invalidTo);
+            Board nextBoard = MoveValidator.move(board, from, invalidTo);
 
             assertEquals(WhiteRook, nextBoard.pieces().get(from));
             assertFalse(nextBoard.pieces().containsKey(invalidTo));
@@ -144,11 +145,11 @@ class BoardMoveTest {
             Board board = new Board(Map.of(from, WhiteKing));
 
             // Válido: 1 paso diagonal
-            Board valid = board.move(from, Square.of("f5"));
+            Board valid = MoveValidator.move(board, from, Square.of("f5"));
             assertEquals(WhiteKing, valid.pieces().get(Square.of("f5")));
 
             // Inválido: 2 pasos
-            Board invalid = board.move(from, Square.of("e6"));
+            Board invalid = MoveValidator.move(board, from, Square.of("e6"));
             assertEquals(WhiteKing, invalid.pieces().get(from));
             assertFalse(invalid.pieces().containsKey(Square.of("e6")));
         }
@@ -162,7 +163,7 @@ class BoardMoveTest {
             String[] targets = {"e6", "f5", "f3", "e2", "c2", "b3", "b5", "c6"};
             for (String target : targets) {
                 Square to = Square.of(target);
-                Board next = board.move(center, to);
+                Board next = MoveValidator.move(board, center, to);
                 assertEquals(WhiteKnight, next.pieces().get(to), "Falló salto a " + target);
             }
         }
@@ -174,7 +175,7 @@ class BoardMoveTest {
             Square to = Square.of("e3");
             Board board = new Board(Map.of(from, WhitePawn));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhitePawn, nextBoard.pieces().get(from));
             assertFalse(nextBoard.pieces().containsKey(to));
@@ -187,7 +188,7 @@ class BoardMoveTest {
             Square to = Square.of("e5");
             Board board = new Board(Map.of(from, WhitePawn));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhitePawn, nextBoard.pieces().get(from));
             assertFalse(nextBoard.pieces().containsKey(to));
@@ -209,7 +210,7 @@ class BoardMoveTest {
                     to, BlackBishop
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertFalse(nextBoard.pieces().containsKey(from));
             assertEquals(WhiteRook, nextBoard.pieces().get(to));
@@ -227,7 +228,7 @@ class BoardMoveTest {
                     to, WhitePawn
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhiteRook, nextBoard.pieces().get(from));
             assertEquals(WhitePawn, nextBoard.pieces().get(to));
@@ -244,7 +245,7 @@ class BoardMoveTest {
                     to, BlackKing
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhiteRook, nextBoard.pieces().get(from));
             assertEquals(BlackKing, nextBoard.pieces().get(to));
@@ -261,7 +262,7 @@ class BoardMoveTest {
                     to, WhitePawn
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertFalse(nextBoard.pieces().containsKey(from));
             assertEquals(BlackKnight, nextBoard.pieces().get(to));
@@ -285,7 +286,7 @@ class BoardMoveTest {
                     blocker, BlackPawn
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhiteRook, nextBoard.pieces().get(from));
             assertFalse(nextBoard.pieces().containsKey(to));
@@ -303,7 +304,7 @@ class BoardMoveTest {
                     blocker, WhiteKnight
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhiteRook, nextBoard.pieces().get(from));
             assertFalse(nextBoard.pieces().containsKey(to));
@@ -321,7 +322,7 @@ class BoardMoveTest {
                     blocker, WhitePawn
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(BlackBishop, nextBoard.pieces().get(from));
             assertFalse(nextBoard.pieces().containsKey(to));
@@ -339,7 +340,7 @@ class BoardMoveTest {
                     blocker, BlackKnight
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertEquals(WhitePawn, nextBoard.pieces().get(from));
             assertEquals(BlackKnight, nextBoard.pieces().get(blocker));
@@ -358,7 +359,7 @@ class BoardMoveTest {
                     Square.of("e5"), BlackPawn
             ));
 
-            Board nextBoard = board.move(from, to);
+            Board nextBoard = MoveValidator.move(board, from, to);
 
             assertFalse(nextBoard.pieces().containsKey(from));
             assertEquals(WhiteKnight, nextBoard.pieces().get(to));
@@ -377,7 +378,7 @@ class BoardMoveTest {
             Square to = Square.of("e5");
 
             assertDoesNotThrow(() -> {
-                Board next = board.move(emptyFrom, to);
+                Board next = MoveValidator.move(board, emptyFrom, to);
                 assertEquals(1, next.pieces().size());
                 assertFalse(next.pieces().containsKey(to));
             });
@@ -389,7 +390,7 @@ class BoardMoveTest {
             Square square = Square.of("d4");
             Board board = new Board(Map.of(square, WhiteBishop));
 
-            Board nextBoard = board.move(square, square);
+            Board nextBoard = MoveValidator.move(board, square, square);
 
             assertEquals(WhiteBishop, nextBoard.pieces().get(square));
         }
@@ -406,7 +407,7 @@ class BoardMoveTest {
             Square from = Square.of("d2");
             Square to = Square.of("d4");
 
-            Board nextBoard = initial.move(from, to);
+            Board nextBoard = MoveValidator.move(initial, from, to);
 
             assertNotSame(initial, nextBoard);
             assertEquals(WhitePawn, initial.pieces().get(from), "El origen en el tablero inicial debe seguir teniendo la pieza");
@@ -420,7 +421,7 @@ class BoardMoveTest {
             Square to = Square.of("h8"); // Diagonal ilegal para una torre
             Board board = new Board(Map.of(from, WhiteRook));
 
-            Board next = board.move(from, to);
+            Board next = MoveValidator.move(board, from, to);
 
             assertEquals(board.pieces(), next.pieces());
         }

@@ -19,7 +19,8 @@ public record Game(
     }
 
     public Game play(Square from, Square to) {
-        Board nextBoard = this.board.move(from, to);
+
+        Board nextBoard = MoveValidator.move(this.board, from, to);
 
         if (nextBoard.equals(this.board) || this.status == CHECKMATE) return this;
 
@@ -36,7 +37,7 @@ public record Game(
         boolean inCheck = boardToCheck.isInCheck(oppositeSide);
 
         if (inCheck) {
-            if (!boardToCheck.hasLegalMove(oppositeSide)) return CHECKMATE;
+            if (!MoveValidator.hasLegalMove(board, oppositeSide)) return CHECKMATE;
             return CHECK;
         }
 
