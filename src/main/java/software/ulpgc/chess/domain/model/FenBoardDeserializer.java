@@ -1,15 +1,9 @@
-package software.ulpgc.chess.infrastructure.adapters;
-
-import software.ulpgc.chess.domain.model.Board;
-import software.ulpgc.chess.domain.model.Piece;
-import software.ulpgc.chess.domain.model.Square;
-import software.ulpgc.chess.architecture.ports.BoardDeserializer;
+package software.ulpgc.chess.domain.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class FenBoardDeserializer implements BoardDeserializer {
-    @Override
+public class FenBoardDeserializer {
     public Board deserialize(String value) {
         return deserialize(value.split(" ")[0].split("/"));
     }

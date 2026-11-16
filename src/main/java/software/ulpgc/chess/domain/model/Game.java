@@ -8,9 +8,10 @@ public record Game(
         GameStatus status,
         ChessClock clock
 ) {
+
     public static Game initial() {
         return new Game(
-                Board.initial(),
+                StandardBoardFactory.createBoard(),
                 Side.WHITE,
                 GameStatus.PLAYING,
                 ChessClock.initial()

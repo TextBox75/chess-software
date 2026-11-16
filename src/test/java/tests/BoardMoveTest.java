@@ -1,10 +1,13 @@
 package tests;
 
+import junit.framework.JUnit4TestAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDirFactory;
 import software.ulpgc.chess.domain.model.Board;
 import software.ulpgc.chess.domain.model.Square;
+import software.ulpgc.chess.domain.model.StandardBoardFactory;
 
 import java.util.Map;
 
@@ -21,7 +24,7 @@ class BoardMoveTest {
         @Test
         @DisplayName("El tablero inicial debe contener exactamente 32 piezas y posiciones clave")
         void initial_board_should_contain_32_pieces() {
-            Board board = Board.initial();
+            Board board = StandardBoardFactory.createBoard();
 
             assertEquals(32, board.pieces().size());
             assertEquals(WhiteRook, board.pieces().get(Square.of("a1")));
@@ -37,7 +40,7 @@ class BoardMoveTest {
         @Test
         @DisplayName("Debe permitir el avance inicial de un peón a dos casillas")
         void should_allow_pawn_double_step_from_initial_position() {
-            Board board = Board.initial();
+            Board board = StandardBoardFactory.createBoard();
             Square from = Square.of("e2");
             Square to = Square.of("e4");
 
@@ -50,7 +53,7 @@ class BoardMoveTest {
         @Test
         @DisplayName("Debe permitir el avance inicial de un peón negro a dos casillas hacia abajo")
         void should_allow_black_pawn_double_step_from_initial_position() {
-            Board board = Board.initial();
+            Board board = StandardBoardFactory.createBoard();
             Square from = Square.of("d7");
             Square to = Square.of("d5");
 
@@ -63,7 +66,7 @@ class BoardMoveTest {
         @Test
         @DisplayName("Debe permitir al caballo saltar los peones en la apertura")
         void should_allow_knight_to_jump_in_opening() {
-            Board board = Board.initial();
+            Board board = StandardBoardFactory.createBoard();
             Square from = Square.of("b1");
             Square to = Square.of("c3");
 
@@ -77,7 +80,7 @@ class BoardMoveTest {
         @Test
         @DisplayName("No debe permitir mover una torre en la apertura porque los peones la bloquean")
         void should_not_allow_rook_to_move_through_pawns_in_opening() {
-            Board board = Board.initial();
+            Board board = StandardBoardFactory.createBoard();
             Square from = Square.of("a1");
             Square to = Square.of("a3");
 
@@ -399,7 +402,7 @@ class BoardMoveTest {
         @Test
         @DisplayName("Un movimiento válido no debe alterar el tablero original")
         void original_board_should_remain_unchanged_after_move() {
-            Board initial = Board.initial();
+            Board initial = StandardBoardFactory.createBoard();
             Square from = Square.of("d2");
             Square to = Square.of("d4");
 

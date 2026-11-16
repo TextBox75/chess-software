@@ -1,7 +1,6 @@
 package software.ulpgc.chess.domain.model;
 
-import static software.ulpgc.chess.domain.model.File.A;
-import static software.ulpgc.chess.domain.model.File.H;
+import static software.ulpgc.chess.domain.model.File.*;
 import static software.ulpgc.chess.domain.model.Rank.R1;
 import static software.ulpgc.chess.domain.model.Rank.R8;
 

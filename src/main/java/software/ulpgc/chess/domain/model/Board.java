@@ -3,8 +3,7 @@ package software.ulpgc.chess.domain.model;
 import java.util.*;
 
 import static software.ulpgc.chess.domain.model.File.*;
-import static software.ulpgc.chess.domain.model.Rank.*;
-import static software.ulpgc.chess.domain.model.Piece.*;
+import static software.ulpgc.chess.domain.model.Square.allSquares;
 
 public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
 
@@ -15,51 +14,6 @@ public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
     public Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
         this.pieces = Map.copyOf(pieces);
         this.castlingRights = castlingRights;
-    }
-
-    public static Board initial() {
-        return new Board(initialMap());
-    }
-
-    public static Map<Square, Piece> initialMap() {
-
-        return Map.ofEntries(
-                Map.entry(new Square(A, R1), WhiteRook),
-                Map.entry(new Square(B, R1), WhiteKnight),
-                Map.entry(new Square(C, R1), WhiteBishop),
-                Map.entry(new Square(D, R1), WhiteQueen),
-                Map.entry(new Square(E, R1), WhiteKing),
-                Map.entry(new Square(F, R1), WhiteBishop),
-                Map.entry(new Square(G, R1), WhiteKnight),
-                Map.entry(new Square(H, R1), WhiteRook),
-
-                Map.entry(new Square(A, R2), WhitePawn),
-                Map.entry(new Square(B, R2), WhitePawn),
-                Map.entry(new Square(C, R2), WhitePawn),
-                Map.entry(new Square(D, R2), WhitePawn),
-                Map.entry(new Square(E, R2), WhitePawn),
-                Map.entry(new Square(F, R2), WhitePawn),
-                Map.entry(new Square(G, R2), WhitePawn),
-                Map.entry(new Square(H, R2), WhitePawn),
-
-                Map.entry(new Square(A, R7), BlackPawn),
-                Map.entry(new Square(B, R7), BlackPawn),
-                Map.entry(new Square(C, R7), BlackPawn),
-                Map.entry(new Square(D, R7), BlackPawn),
-                Map.entry(new Square(E, R7), BlackPawn),
-                Map.entry(new Square(F, R7), BlackPawn),
-                Map.entry(new Square(G, R7), BlackPawn),
-                Map.entry(new Square(H, R7), BlackPawn),
-
-                Map.entry(new Square(A, R8), BlackRook),
-                Map.entry(new Square(B, R8), BlackKnight),
-                Map.entry(new Square(C, R8), BlackBishop),
-                Map.entry(new Square(D, R8), BlackQueen),
-                Map.entry(new Square(E, R8), BlackKing),
-                Map.entry(new Square(F, R8), BlackBishop),
-                Map.entry(new Square(G, R8), BlackKnight),
-                Map.entry(new Square(H, R8), BlackRook)
-        );
     }
 
     public Board move(Square from, Square to) {
@@ -80,7 +34,7 @@ public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
         newPieces.remove(from);
         newPieces.put(to, piece);
 
-        if (isCastlingMove(piece, from, to)) {
+        if (CastlingValidator.isCastlingMove(piece, from, to)) {
             boolean isKingSide = to.file().ordinal() > from.file().ordinal();
             Square rookOrigin = new Square(isKingSide ? H : A, from.rank());
             Square rookTarget = new Square(isKingSide ? F : D, from.rank());
@@ -92,8 +46,8 @@ public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
     }
 
     private boolean isMoveLegal(Piece piece, Square from, Square to) {
-        if (isCastlingMove(piece, from, to)) {
-            return isCastlingLegal(piece, from, to);
+        if (CastlingValidator.isCastlingMove(piece, from, to)) {
+            return CastlingValidator.isCastlingLegal(this, piece, from, to);
         }
 
         Piece target = pieces.get(to);
@@ -107,39 +61,7 @@ public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
         return isKinematicValid && isPathClear(piece, from, to) && canOccupySquare(piece, to);
     }
 
-    private boolean isCastlingMove(Piece piece, Square from, Square to) {
-        if (!piece.isKing()) return false;
-        Square expectedOrigin = piece.isWhite() ? new Square(E, R1) : new Square(E, R8);
-        if (!from.equals(expectedOrigin)) return false;
-
-        SquareDistance distance = new SquareDistance(from, to);
-        return Math.abs(distance.X()) == 2 && distance.Y() == 0;
-    }
-
-    private boolean isCastlingLegal(Piece king, Square from, Square to) {
-        Side side = king.isWhite() ? Side.WHITE : Side.BLACK;
-        boolean isKingSide = to.file().ordinal() > from.file().ordinal(); // true = corto (hacia H), false = largo (hacia A)
-
-        if (!castlingRights.canCastle(side, isKingSide)) return false;
-
-        // 1. Verificar que la torre aliada está en su esquina
-        Square rookSquare = new Square(isKingSide ? H : A, from.rank());
-        Piece rook = pieces.get(rookSquare);
-        if (rook == null || !rook.isOfSide(side) || !rook.isRook()) return false;
-
-        // 2. Verificar que no hay piezas entre el rey y la torre
-        if (!isPathClear(from, rookSquare)) return false;
-
-        // 3. Verificar que ni el origen, ni el paso intermedio, ni el destino están atacados
-        Side enemy = side.opposite();
-        Square passingSquare = new Square(isKingSide ? F : D, from.rank());
-
-        return !isSquareAttacked(from, enemy)
-                && !isSquareAttacked(passingSquare, enemy)
-                && !isSquareAttacked(to, enemy);
-    }
-
-    private boolean isPathClear(Piece piece, Square from, Square to) {
+    public boolean isPathClear(Piece piece, Square from, Square to) {
         if (piece.isKnight()) return true;
         return isPathClear(from, to);
     }
@@ -181,7 +103,7 @@ public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
                 .orElseThrow(() -> new IllegalStateException("Rey no encontrado en el tablero"));
     }
 
-    private boolean isSquareAttacked(Square targetSquare, Side attackingSide) {
+    public boolean isSquareAttacked(Square targetSquare, Side attackingSide) {
         return pieces.entrySet().stream()
                 .filter(entry -> entry.getValue().isOfSide(attackingSide))
                 .anyMatch(entry -> {
@@ -218,11 +140,5 @@ public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
         }
 
         return false;
-    }
-
-    private static List<Square> allSquares() {
-        return Arrays.stream(File.values())
-                .flatMap(file -> Arrays.stream(Rank.values()).map(rank -> new Square(file, rank)))
-                .toList();
     }
 }

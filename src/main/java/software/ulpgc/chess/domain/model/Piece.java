@@ -4,7 +4,7 @@ import software.ulpgc.chess.architecture.ports.PieceBehaviour;
 
 import java.util.Arrays;
 
-import static software.ulpgc.chess.domain.model.StandardPieceBehaviour.*;
+import static software.ulpgc.chess.infrastructure.adapters.StandardPieceBehaviour.*;
 
 public enum Piece {
     WhitePawn('P', WhitePawnBehaviour),
@@ -51,13 +51,9 @@ public enum Piece {
         return this.name().startsWith("White");
     }
 
-    private boolean isPawn() {
-        return this.name().endsWith("Pawn");
-    }
+    private boolean isPawn() { return this.name().endsWith("Pawn"); }
 
-    public boolean isRook() {
-        return this.name().endsWith("Rook");
-    }
+    public boolean isRook() { return this.name().endsWith("Rook"); }
 
     public boolean isOfSide(Side side) {
         return this.isWhite() == (side == Side.WHITE);

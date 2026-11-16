@@ -12,7 +12,9 @@ public class Main {
         Game game = Game.initial();
         game.play(Square.from(A, Rank.R2), Square.from(B, Rank.R3));
 
+        // TODO: patrón de static
         // TODO: enroque
+        // TODO: en passant
 
         // TODO: clase de room
         // TODO: promociones (al completo, se necesita interfaz primero)

@@ -1,6 +1,7 @@
 package software.ulpgc.chess.domain.model;
 
 import java.util.Arrays;
+import java.util.List;
 
 public record Square(File file, Rank rank) {
     public static Square from(File file, Rank rank) {
@@ -35,5 +36,11 @@ public record Square(File file, Rank rank) {
                 .filter(rank -> rank.symbol() == c)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static List<Square> allSquares() {
+        return Arrays.stream(File.values())
+                .flatMap(file -> Arrays.stream(Rank.values()).map(rank -> new Square(file, rank)))
+                .toList();
     }
 }

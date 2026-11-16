@@ -3,7 +3,8 @@ package tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import software.ulpgc.chess.infrastructure.adapters.FenBoardDeserializer;
+import software.ulpgc.chess.domain.model.StandardBoardFactory;
+import software.ulpgc.chess.domain.model.FenBoardDeserializer;
 import software.ulpgc.chess.domain.model.Board;
 import software.ulpgc.chess.domain.model.Piece;
 import software.ulpgc.chess.domain.model.Square;
@@ -23,7 +24,7 @@ public class FenBoardDeserializerTest {
     @DisplayName("Debe deserializar correctamente la posición inicial de ajedrez")
     void shouldDeserializeInitialBoard() {
         String fenInitial = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        Board expectedBoard = Board.initial();
+        Board expectedBoard = StandardBoardFactory.createBoard();
         Board actualBoard = deserializer.deserialize(fenInitial);
         assertThat(actualBoard).isNotNull();
     }
