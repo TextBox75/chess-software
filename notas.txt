@@ -1,0 +1,12 @@
+PlayerService (usuarios registrados)
+
+GameService
+
+MatchesService (id de jugadores y id de partidas. jugadores que participaron en torneos y partidas que jugaron)
+
+RegisterService
+
+AuthService
+
+la nota parte de 0 tienes que demostrar que sabes mrd
+
