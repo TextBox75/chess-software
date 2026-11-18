@@ -1,19 +1,17 @@
 package tests;
 
-import junit.framework.JUnit4TestAdapter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDirFactory;
-import software.ulpgc.chess.domain.model.Board;
-import software.ulpgc.chess.domain.model.MoveValidator;
-import software.ulpgc.chess.domain.model.Square;
-import software.ulpgc.chess.domain.model.StandardBoardFactory;
+import software.ulpgc.chess.architecture.domain.Board;
+import software.ulpgc.chess.architecture.domain.MoveValidator;
+import software.ulpgc.chess.architecture.domain.Square;
+import software.ulpgc.chess.architecture.domain.StandardBoardFactory;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static software.ulpgc.chess.domain.model.Piece.*;
+import static software.ulpgc.chess.architecture.domain.Piece.*;
 
 @DisplayName("Tests unitarios rigurosos para Board")
 class BoardMoveTest {

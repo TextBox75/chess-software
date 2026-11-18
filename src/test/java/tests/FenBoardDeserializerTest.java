@@ -3,11 +3,11 @@ package tests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import software.ulpgc.chess.domain.model.StandardBoardFactory;
-import software.ulpgc.chess.domain.model.FenBoardDeserializer;
-import software.ulpgc.chess.domain.model.Board;
-import software.ulpgc.chess.domain.model.Piece;
-import software.ulpgc.chess.domain.model.Square;
+import software.ulpgc.chess.architecture.domain.StandardBoardFactory;
+import software.ulpgc.chess.architecture.domain.FenBoardDeserializer;
+import software.ulpgc.chess.architecture.domain.Board;
+import software.ulpgc.chess.architecture.domain.Piece;
+import software.ulpgc.chess.architecture.domain.Square;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

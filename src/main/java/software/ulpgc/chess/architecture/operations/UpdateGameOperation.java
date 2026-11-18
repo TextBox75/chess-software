@@ -1,6 +1,6 @@
-package software.ulpgc.chess.architecture.usecase;
+package software.ulpgc.chess.architecture.operations;
 
-import software.ulpgc.chess.architecture.Operation;
+import software.ulpgc.chess.architecture.domain.Operation;
 
 public class UpdateGameOperation implements Operation {
     @Override

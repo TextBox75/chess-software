@@ -1,8 +1,8 @@
-package software.ulpgc.chess.domain.model;
+package software.ulpgc.chess.architecture.domain;
 
-import static software.ulpgc.chess.domain.model.File.*;
-import static software.ulpgc.chess.domain.model.Rank.R1;
-import static software.ulpgc.chess.domain.model.Rank.R8;
+import static software.ulpgc.chess.architecture.domain.File.*;
+import static software.ulpgc.chess.architecture.domain.Rank.R1;
+import static software.ulpgc.chess.architecture.domain.Rank.R8;
 
 
 public final class CastlingValidator {
@@ -44,7 +44,6 @@ public final class CastlingValidator {
         return new Square(isKingSide(from, to) ? H : A, from.rank());
     }
 
-    /** Casilla a la que va la torre; coincide con la casilla que cruza el rey. */
     public static Square rookTarget(Square from, Square to) {
         return new Square(isKingSide(from, to) ? F : D, from.rank());
     }

@@ -1,10 +1,10 @@
-package software.ulpgc.chess.domain.model;
+package software.ulpgc.chess.architecture.domain;
 
 import java.util.Map;
 
-import static software.ulpgc.chess.domain.model.File.*;
-import static software.ulpgc.chess.domain.model.Piece.*;
-import static software.ulpgc.chess.domain.model.Rank.*;
+import static software.ulpgc.chess.architecture.domain.File.*;
+import static software.ulpgc.chess.architecture.domain.Piece.*;
+import static software.ulpgc.chess.architecture.domain.Rank.*;
 
 public class StandardBoardFactory {
 

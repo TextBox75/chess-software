@@ -1,10 +1,8 @@
-package software.ulpgc.chess.domain.model;
-
-import software.ulpgc.chess.architecture.ports.PieceBehaviour;
+package software.ulpgc.chess.architecture.domain;
 
 import java.util.Arrays;
 
-import static software.ulpgc.chess.infrastructure.adapters.StandardPieceBehaviour.*;
+import static software.ulpgc.chess.architecture.domain.StandardPieceBehaviour.*;
 
 public enum Piece {
     WhitePawn('P', WhitePawnBehaviour),

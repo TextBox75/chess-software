@@ -1,8 +1,8 @@
-package software.ulpgc.chess.domain.model;
+package software.ulpgc.chess.architecture.domain;
 
-import static software.ulpgc.chess.domain.model.File.*;
-import static software.ulpgc.chess.domain.model.Rank.R1;
-import static software.ulpgc.chess.domain.model.Rank.R8;
+import static software.ulpgc.chess.architecture.domain.File.*;
+import static software.ulpgc.chess.architecture.domain.Rank.R1;
+import static software.ulpgc.chess.architecture.domain.Rank.R8;
 
 public record CastlingRights(boolean whiteKingSide, boolean whiteQueenSide, boolean blackKingSide, boolean blackQueenSide) {
 

@@ -1,9 +1,4 @@
-package software.ulpgc.chess.infrastructure.adapters;
-
-import software.ulpgc.chess.architecture.ports.PieceBehaviour;
-import software.ulpgc.chess.domain.model.Rank;
-import software.ulpgc.chess.domain.model.Square;
-import software.ulpgc.chess.domain.model.SquareDistance;
+package software.ulpgc.chess.architecture.domain;
 
 public enum StandardPieceBehaviour implements PieceBehaviour {
 

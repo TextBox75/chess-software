@@ -2,15 +2,13 @@ package tests;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import software.ulpgc.chess.domain.model.*;
+import software.ulpgc.chess.architecture.domain.*;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static software.ulpgc.chess.domain.model.GameStatus.CHECK;
-import static software.ulpgc.chess.domain.model.GameStatus.PLAYING;
-import static software.ulpgc.chess.domain.model.Piece.*;
-import static software.ulpgc.chess.domain.model.Rank.*;
+import static software.ulpgc.chess.architecture.domain.GameStatus.CHECK;
+import static software.ulpgc.chess.architecture.domain.GameStatus.PLAYING;
 
 class PromoteTest {
 

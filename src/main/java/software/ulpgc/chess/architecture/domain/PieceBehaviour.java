@@ -1,6 +1,4 @@
-package software.ulpgc.chess.architecture.ports;
-
-import software.ulpgc.chess.domain.model.Square;
+package software.ulpgc.chess.architecture.domain;
 
 public interface PieceBehaviour {
     boolean isMoveValid(Square from, Square to);

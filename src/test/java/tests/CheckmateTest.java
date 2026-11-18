@@ -3,13 +3,11 @@ package tests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import software.ulpgc.chess.domain.model.*;
+import software.ulpgc.chess.architecture.domain.*;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static software.ulpgc.chess.domain.model.GameStatus.*;
-import static software.ulpgc.chess.domain.model.Piece.*;
 
 @DisplayName("Tests para Jaque y Jaque Mate")
 class CheckmateTest {

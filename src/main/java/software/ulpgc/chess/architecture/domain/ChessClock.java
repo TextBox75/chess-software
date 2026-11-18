@@ -1,4 +1,4 @@
-package software.ulpgc.chess.domain.model;
+package software.ulpgc.chess.architecture.domain;
 
 public record ChessClock(ColorClock whiteClock, ColorClock blackClock) {
     public static ChessClock initial() {

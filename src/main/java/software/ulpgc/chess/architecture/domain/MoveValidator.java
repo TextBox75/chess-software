@@ -1,10 +1,10 @@
-package software.ulpgc.chess.domain.model;
+package software.ulpgc.chess.architecture.domain;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static software.ulpgc.chess.domain.model.Square.allSquares;
+import static software.ulpgc.chess.architecture.domain.Square.allSquares;
 
 public final class MoveValidator {
     public static Board move(Board board, Square from, Square to) {
@@ -69,6 +69,6 @@ public final class MoveValidator {
             newPieces.put(CastlingValidator.rookTarget(from, to), rook);
         }
 
-        return new Board(newPieces, board.castlingRights().update(from, to, piece));
+        return new Board(newPieces);
     }
 }

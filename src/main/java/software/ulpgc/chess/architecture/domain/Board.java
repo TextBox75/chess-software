@@ -1,20 +1,11 @@
-package software.ulpgc.chess.domain.model;
+package software.ulpgc.chess.architecture.domain;
 
 import java.util.Map;
 
-/**
- * Modelo: estado del tablero y consultas básicas.
- * No conoce ninguna regla de movimiento (ni CastlingRule ni MoveService).
- */
-public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
+public record Board(Map<Square, Piece> pieces) {
 
     public Board(Map<Square, Piece> pieces) {
-        this(pieces, CastlingRights.initial());
-    }
-
-    public Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
         this.pieces = Map.copyOf(pieces);
-        this.castlingRights = castlingRights;
     }
 
     public boolean isPathClear(Piece piece, Square from, Square to) {
@@ -68,5 +59,9 @@ public record Board(Map<Square, Piece> pieces, CastlingRights castlingRights) {
                     return piece.getBehaviour().isAttackValid(originSquare, targetSquare)
                             && isPathClear(piece, originSquare, targetSquare);
                 });
+    }
+
+    public Piece pieceAt(Square square) {
+        return this.pieces.get(square);
     }
 }
