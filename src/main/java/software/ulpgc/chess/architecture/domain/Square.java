@@ -5,7 +5,7 @@ import java.util.List;
 
 public record Square(File file, Rank rank) {
     public static Square from(File file, Rank rank) {
-        return null;
+        return new Square(file, rank);
     }
 
     public static Square of(String value) {

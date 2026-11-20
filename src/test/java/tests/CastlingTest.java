@@ -7,15 +7,20 @@ import software.ulpgc.chess.architecture.domain.*;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static software.ulpgc.chess.architecture.domain.GameStatus.PLAYING;
 import static software.ulpgc.chess.architecture.domain.Piece.*;
 
 class CastlingTest {
 
-    /** Game -> Position(Board, State(side, rights)), con los derechos de enroque iniciales. */
+    /**
+     * Construye un Game siguiendo exactamente las relaciones del diagrama:
+     * Game -> Position(Board, State(Side, CastlingRights)), GameStatus, ChessClock(ColorClock, ColorClock)
+     */
     private static Game gameOf(Map<Square, Piece> pieces, Side sideToMove) {
         Board board = new Board(pieces);
         State state = new State(sideToMove, CastlingRights.initial());
-        return new Game(new Position(board, state));
+        ChessClock clock = new ChessClock(new ColorClock(10, 0), new ColorClock(10, 0));
+        return new Game(new Position(board, state), PLAYING, clock);
     }
 
     @Test
@@ -28,12 +33,12 @@ class CastlingTest {
         ), Side.WHITE);
 
         Game afterMove = game.play(Square.of("e1"), Square.of("g1"));
+        Board board = afterMove.position().board();
 
-        Map<Square, Piece> pieces = afterMove.position().board().pieces();
-        assertEquals(WhiteKing, pieces.get(Square.of("g1")));
-        assertEquals(WhiteRook, pieces.get(Square.of("f1")));
-        assertNull(pieces.get(Square.of("e1")));
-        assertNull(pieces.get(Square.of("h1")));
+        assertEquals(WhiteKing, board.pieceAt(Square.of("g1")));
+        assertEquals(WhiteRook, board.pieceAt(Square.of("f1")));
+        assertNull(board.pieceAt(Square.of("e1")));
+        assertNull(board.pieceAt(Square.of("h1")));
     }
 
     @Test
@@ -49,8 +54,8 @@ class CastlingTest {
         State state = game.play(Square.of("e1"), Square.of("g1")).position().state();
 
         assertEquals(Side.BLACK, state.side());
-        assertFalse(state.rights().canCastle(Side.WHITE, true));
-        assertFalse(state.rights().canCastle(Side.WHITE, false));
+        assertFalse(state.castlingRights().canCastle(Side.WHITE, true));
+        assertFalse(state.castlingRights().canCastle(Side.WHITE, false));
     }
 
     @Test
@@ -63,12 +68,12 @@ class CastlingTest {
         ), Side.BLACK);
 
         Game afterMove = game.play(Square.of("e8"), Square.of("c8"));
+        Board board = afterMove.position().board();
 
-        Map<Square, Piece> pieces = afterMove.position().board().pieces();
-        assertEquals(BlackKing, pieces.get(Square.of("c8")));
-        assertEquals(BlackRook, pieces.get(Square.of("d8")));
-        assertNull(pieces.get(Square.of("e8")));
-        assertNull(pieces.get(Square.of("a8")));
+        assertEquals(BlackKing, board.pieceAt(Square.of("c8")));
+        assertEquals(BlackRook, board.pieceAt(Square.of("d8")));
+        assertNull(board.pieceAt(Square.of("e8")));
+        assertNull(board.pieceAt(Square.of("a8")));
     }
 
     @Test
@@ -83,7 +88,6 @@ class CastlingTest {
 
         Game afterMove = game.play(Square.of("e1"), Square.of("g1"));
 
-        // La posición completa (tablero y estado) no debe haber cambiado
         assertEquals(game.position(), afterMove.position());
     }
 
@@ -132,15 +136,14 @@ class CastlingTest {
         game = game.play(Square.of("e2"), Square.of("e1"));
         game = game.play(Square.of("d8"), Square.of("e8"));
 
-        // El derecho se perdió en el State, aunque las piezas estén como al inicio
-        assertFalse(game.position().state().rights().canCastle(Side.WHITE, true));
+        assertFalse(game.position().state().castlingRights().canCastle(Side.WHITE, true));
 
         // 2. Intenta enrocar después de haber perdido el derecho
         Game afterAttempt = game.play(Square.of("e1"), Square.of("g1"));
+        Board board = afterAttempt.position().board();
 
-        Map<Square, Piece> pieces = afterAttempt.position().board().pieces();
-        assertEquals(WhiteKing, pieces.get(Square.of("e1")));
-        assertNull(pieces.get(Square.of("g1")));
+        assertEquals(WhiteKing, board.pieceAt(Square.of("e1")));
+        assertNull(board.pieceAt(Square.of("g1")));
     }
 
     @Test
@@ -159,17 +162,17 @@ class CastlingTest {
         game = game.play(Square.of("h2"), Square.of("h1"));
         game = game.play(Square.of("d8"), Square.of("e8"));
 
-        assertFalse(game.position().state().rights().canCastle(Side.WHITE, true));
-        assertTrue(game.position().state().rights().canCastle(Side.WHITE, false));
+        assertFalse(game.position().state().castlingRights().canCastle(Side.WHITE, true));
+        assertTrue(game.position().state().castlingRights().canCastle(Side.WHITE, false));
 
         // Enroque corto (hacia g1) debe fallar
         Game failedKingside = game.play(Square.of("e1"), Square.of("g1"));
-        assertEquals(WhiteKing, failedKingside.position().board().pieces().get(Square.of("e1")));
+        assertEquals(WhiteKing, failedKingside.position().board().pieceAt(Square.of("e1")));
 
         // Enroque largo (hacia c1) sigue estando permitido
         Game validQueenside = game.play(Square.of("e1"), Square.of("c1"));
-        Map<Square, Piece> pieces = validQueenside.position().board().pieces();
-        assertEquals(WhiteKing, pieces.get(Square.of("c1")));
-        assertEquals(WhiteRook, pieces.get(Square.of("d1")));
+        Board board = validQueenside.position().board();
+        assertEquals(WhiteKing, board.pieceAt(Square.of("c1")));
+        assertEquals(WhiteRook, board.pieceAt(Square.of("d1")));
     }
 }

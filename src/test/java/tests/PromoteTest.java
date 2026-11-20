@@ -9,6 +9,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static software.ulpgc.chess.architecture.domain.GameStatus.CHECK;
 import static software.ulpgc.chess.architecture.domain.GameStatus.PLAYING;
+import static software.ulpgc.chess.architecture.domain.Piece.*;
+import static software.ulpgc.chess.architecture.domain.Rank.*;
 
 class PromoteTest {
 
@@ -41,7 +43,9 @@ class PromoteTest {
                 Square.of("e8"), BlackKing
         ));
 
-        Board afterMove = MoveValidator.move(board, Square.of("a7"), Square.of("a8"));
+        Position position = new Position(board, State.initial());
+
+        Board afterMove = MoveValidator.move(position, Square.of("a7"), Square.of("a8")).board();
 
         assertEquals(WhiteQueen, afterMove.pieces().get(Square.of("a8")));
         assertNull(afterMove.pieces().get(Square.of("a7")));
@@ -56,7 +60,9 @@ class PromoteTest {
                 Square.of("e8"), BlackKing
         ));
 
-        Board afterMove = MoveValidator.move(board, Square.of("h2"), Square.of("h1"));
+        Position position = new Position(board, State.initial());
+
+        Board afterMove = MoveValidator.move(position, Square.of("h2"), Square.of("h1")).board();
 
         assertEquals(BlackQueen, afterMove.pieces().get(Square.of("h1")));
         assertNull(afterMove.pieces().get(Square.of("h2")));
@@ -72,7 +78,9 @@ class PromoteTest {
                 Square.of("e8"), BlackKing
         ));
 
-        Board afterCapture = MoveValidator.move(board, Square.of("b7"), Square.of("c8"));
+        Position position = new Position(board, State.initial());
+
+        Board afterCapture = MoveValidator.move(position, Square.of("b7"), Square.of("c8")).board();
 
         assertEquals(WhiteQueen, afterCapture.pieces().get(Square.of("c8")));
         assertNull(afterCapture.pieces().get(Square.of("b7")));
@@ -82,16 +90,19 @@ class PromoteTest {
     @DisplayName("La nueva Dama recién coronada da jaque inmediatamente al rey rival")
     void promoted_pawn_should_immediately_give_check_as_queen() {
         // Al coronar en a8, la nueva dama blanca ataca horizontalmente al rey negro en e8
+
         Board board = new Board(Map.of(
                 Square.of("a7"), WhitePawn,
                 Square.of("e1"), WhiteKing,
                 Square.of("e8"), BlackKing
         ));
 
-        Game game = new Game(board, Side.WHITE, PLAYING, ChessClock.initial());
+        Position position = new Position(board, State.initial());
+
+        Game game = new Game(position, PLAYING, ChessClock.initial());
         Game afterPromotion = game.play(Square.of("a7"), Square.of("a8"));
 
-        assertEquals(WhiteQueen, afterPromotion.board().pieces().get(Square.of("a8")));
+        assertEquals(WhiteQueen, afterPromotion.position().board().pieces().get(Square.of("a8")));
         assertEquals(CHECK, afterPromotion.status(), "La dama recién coronada debe dar jaque en la fila 8");
     }
 }

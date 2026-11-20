@@ -4,7 +4,6 @@ import static software.ulpgc.chess.architecture.domain.File.*;
 import static software.ulpgc.chess.architecture.domain.Rank.R1;
 import static software.ulpgc.chess.architecture.domain.Rank.R8;
 
-
 public final class CastlingValidator {
 
     public static boolean isCastlingMove(Piece piece, Square from, Square to) {
@@ -13,27 +12,24 @@ public final class CastlingValidator {
         if (!from.equals(expectedOrigin)) return false;
 
         SquareDistance distance = new SquareDistance(from, to);
-        return Math.abs(distance.X()) == 2 && distance.Y() == 0;
+        return Math.abs(distance.x()) == 2 && distance.y() == 0;
     }
 
-    public static boolean isLegal(Board board, Piece king, Square from, Square to) {
+    public static boolean isCastlingLegal(Position position, Piece king, Square from, Square to) {
         Side side = king.isWhite() ? Side.WHITE : Side.BLACK;
         boolean kingSide = isKingSide(from, to);
 
-        if (!board.castlingRights().canCastle(side, kingSide)) return false;
+        if (!position.state().castlingRights().canCastle(side, kingSide)) return false;
 
-        // 1. La torre aliada está en su esquina
-        Piece rook = board.pieces().get(rookOrigin(from, to));
+        Piece rook = position.board().pieces().get(rookOrigin(from, to));
         if (rook == null || !rook.isOfSide(side) || !rook.isRook()) return false;
 
-        // 2. No hay piezas entre el rey y la torre
-        if (!board.isPathClear(king, from, rookOrigin(from, to))) return false;
+        if (!position.board().isPathClear(king, from, rookOrigin(from, to))) return false;
 
-        // 3. Ni el origen, ni el paso intermedio, ni el destino están atacados
         Side enemy = side.opposite();
-        return !board.isSquareAttacked(from, enemy)
-                && !board.isSquareAttacked(rookTarget(from, to), enemy)
-                && !board.isSquareAttacked(to, enemy);
+        return !position.board().isSquareAttacked(from, enemy)
+                && !position.board().isSquareAttacked(rookTarget(from, to), enemy)
+                && !position.board().isSquareAttacked(to, enemy);
     }
 
     public static boolean isKingSide(Square from, Square to) {

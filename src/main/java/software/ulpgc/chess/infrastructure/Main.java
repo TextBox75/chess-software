@@ -4,8 +4,7 @@ import software.ulpgc.chess.architecture.domain.Game;
 import software.ulpgc.chess.architecture.domain.Rank;
 import software.ulpgc.chess.architecture.domain.Square;
 
-import static software.ulpgc.chess.architecture.domain.File.A;
-import static software.ulpgc.chess.architecture.domain.File.B;
+import static software.ulpgc.chess.architecture.domain.File.*;
 
 public class Main {
 
@@ -13,11 +12,11 @@ public class Main {
 
     // TODO: clase de room
     // TODO: promociones (al completo, se necesita interfaz primero)
-    // TODO: reloj
+    // TODO: reloj (se necesita un tick-update)
 
     static void main() {
         Game game = Game.initial();
-        game.play(Square.from(A, Rank.R2), Square.from(B, Rank.R3));
+        game.play(Square.from(A, Rank.R2), Square.from(B, Rank.R2));
 
         //Javalin.create(Main::init).start(8080);
     }

@@ -1,43 +1,47 @@
 package software.ulpgc.chess.architecture.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import static software.ulpgc.chess.architecture.domain.GameStatus.*;
 
 public record Game(
         Position position,
         GameStatus status,
-        ChessClock clock
+        ChessClock clock,
+        List<Move> moveHistory
 ) {
 
     public static Game initial() {
         return new Game(
                 Position.initial(),
                 GameStatus.PLAYING,
-                ChessClock.initial()
+                ChessClock.initial(),
+                new ArrayList<>()
         );
     }
 
     public Game play(Square from, Square to) {
 
-        Board nextBoard = MoveValidator.move(this.position().board(), from, to);
+        MoveResult moveResult = MoveValidator.move(this.position, from, to);
 
-        if (nextBoard.equals(this.position.board()) || this.status == CHECKMATE) return this;
+        if (moveResult.position().board().equals(this.position.board()) || this.status == CHECKMATE) return this;
 
         return new Game(
-                new Position(
-                        MoveValidator.move(this.position.board(), from, to),
-                        this.position.state().next(from, to, this.position.board().pieceAt(from))
-                ),
-                checkGameStatus(nextBoard),
-                ChessClock.initial()
+                moveResult.position(),
+                checkGameStatus(moveResult.position()),
+                ChessClock.initial(),
+                Stream.concat(this.moveHistory.stream(), Stream.of(moveResult.move())).toList()
         );
     }
 
-    private GameStatus checkGameStatus(Board boardToCheck) {
+    private GameStatus checkGameStatus(Position position) {
         Side oppositeSide = this.position.state().side().opposite();
-        boolean inCheck = boardToCheck.isInCheck(oppositeSide);
+        boolean inCheck = position.board().isInCheck(oppositeSide);
 
         if (inCheck) {
-            if (!MoveValidator.hasLegalMove(this.position.board(), oppositeSide)) return CHECKMATE;
+            if (!MoveValidator.hasLegalMove(this.position, oppositeSide)) return CHECKMATE;
             return CHECK;
         }
 

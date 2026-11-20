@@ -9,11 +9,11 @@ public class SquareDistance {
         dy = to.rank().ordinal() - from.rank().ordinal();
     }
 
-    public int X() {
+    public int x() {
         return dx;
     }
 
-    public int Y() {
+    public int y() {
         return dy;
     }
 

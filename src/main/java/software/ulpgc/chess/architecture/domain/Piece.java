@@ -49,7 +49,7 @@ public enum Piece {
         return this.name().startsWith("White");
     }
 
-    private boolean isPawn() { return this.name().endsWith("Pawn"); }
+    public boolean isPawn() { return this.name().endsWith("Pawn"); }
 
     public boolean isRook() { return this.name().endsWith("Rook"); }
 

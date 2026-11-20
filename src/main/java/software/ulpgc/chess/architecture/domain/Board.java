@@ -16,8 +16,8 @@ public record Board(Map<Square, Piece> pieces) {
     private boolean isPathClear(Square from, Square to) {
         SquareDistance distance = new SquareDistance(from, to);
 
-        int stepX = Integer.signum(distance.X());
-        int stepY = Integer.signum(distance.Y());
+        int stepX = Integer.signum(distance.x());
+        int stepY = Integer.signum(distance.y());
 
         int currentFile = from.file().ordinal() + stepX;
         int currentRank = from.rank().ordinal() + stepY;

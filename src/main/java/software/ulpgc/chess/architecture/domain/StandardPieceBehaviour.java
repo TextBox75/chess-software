@@ -47,13 +47,13 @@ public enum StandardPieceBehaviour implements PieceBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
-            return dist.isVertical() && dist.Y() > 0 && dist.Y() <= (from.rank() == Rank.R2 ? 2 : 1);
+            return dist.isVertical() && dist.y() > 0 && dist.y() <= (from.rank() == Rank.R2 ? 2 : 1);
         }
 
         @Override
         public boolean isAttackValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
-            return dist.isDiagonal() && dist.Y() == 1;
+            return dist.isDiagonal() && dist.y() == 1;
         }
     },
 
@@ -61,13 +61,13 @@ public enum StandardPieceBehaviour implements PieceBehaviour {
         @Override
         public boolean isMoveValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
-            return dist.isVertical() && dist.Y() < 0 && dist.Y() >= (from.rank() == Rank.R7 ? -2 : -1);
+            return dist.isVertical() && dist.y() < 0 && dist.y() >= (from.rank() == Rank.R7 ? -2 : -1);
         }
 
         @Override
         public boolean isAttackValid(Square from, Square to) {
             SquareDistance dist = new SquareDistance(from, to);
-            return dist.isDiagonal() && dist.Y() == -1;
+            return dist.isDiagonal() && dist.y() == -1;
         }
     }
 }

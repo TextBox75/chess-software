@@ -7,47 +7,49 @@ import java.util.Map;
 import static software.ulpgc.chess.architecture.domain.Square.allSquares;
 
 public final class MoveValidator {
-    public static Board move(Board board, Square from, Square to) {
-        Piece piece = board.pieces().get(from);
+    public static MoveResult move(Position position, Square from, Square to) {
+        Piece piece = position.board().pieceAt(from);
 
-        if (piece == null || !isMoveLegal(board, piece, from, to)) return board;
+        if (piece == null || !isMoveLegal(position, piece, from, to)) return new MoveResult(position, null);
 
         if (piece.canPromote(to.rank())) {
             piece = piece.defaultPromote();
         }
 
-        return apply(board, piece, from, to);
+        return apply(position, piece, from, to);
     }
 
-    public static boolean hasLegalMove(Board board, Side side) {
-        List<Square> squares = board.pieces().entrySet().stream()
+    public static boolean hasLegalMove(Position position, Side side) {
+        List<Square> squares = position.board().pieces().entrySet().stream()
                 .filter(entry -> entry.getValue().isOfSide(side))
                 .map(Map.Entry::getKey)
                 .toList();
 
         for (Square from : squares) {
-            if (hasLegalMove(board, side, from)) return true;
+            if (hasLegalMove(position, side, from)) return true;
         }
         return false;
     }
 
-    private static boolean hasLegalMove(Board board, Side side, Square from) {
+    private static boolean hasLegalMove(Position position, Side side, Square from) {
         for (Square to : allSquares()) {
             if (from.equals(to)) continue;
 
-            Board next = move(board, from, to);
+            Position next = MoveValidator.move(position, from, to).position();
 
-            if (!next.equals(board) && !next.isInCheck(side)) return true;
+            if (!next.board().equals(position.board()) && !next.board().isInCheck(side)) return true;
         }
         return false;
     }
 
-    private static boolean isMoveLegal(Board board, Piece piece, Square from, Square to) {
+    private static boolean isMoveLegal(Position position, Piece piece, Square from, Square to) {
         if (CastlingValidator.isCastlingMove(piece, from, to)) {
-            return CastlingValidator.isLegal(board, piece, from, to);
+            return CastlingValidator.isCastlingLegal(position, piece, from, to);
+        } else if (EnPassantValidator.isEnPassantMove(position, from, to)) {
+            return EnPassantValidator.isEnPassantLegal(position, from, to, );
         }
 
-        Piece target = board.pieces().get(to);
+        Piece target = position.board().pieces().get(to);
         boolean isEnemyTarget = target != null && target.isWhite() != piece.isWhite();
 
         boolean isKinematicValid = isEnemyTarget
@@ -55,20 +57,25 @@ public final class MoveValidator {
                 : piece.getBehaviour().isMoveValid(from, to);
 
         return isKinematicValid
-                && board.isPathClear(piece, from, to)
-                && board.canOccupySquare(piece, to);
+                && position.board().isPathClear(piece, from, to)
+                && position.board().canOccupySquare(piece, to);
     }
 
-    private static Board apply(Board board, Piece piece, Square from, Square to) {
-        Map<Square, Piece> newPieces = new HashMap<>(board.pieces());
+    private static MoveResult apply(Position position, Piece piece, Square from, Square to) {
+        Map<Square, Piece> newPieces = new HashMap<>(position.board().pieces());
         newPieces.remove(from);
         newPieces.put(to, piece);
 
         if (CastlingValidator.isCastlingMove(piece, from, to)) {
             Piece rook = newPieces.remove(CastlingValidator.rookOrigin(from, to));
             newPieces.put(CastlingValidator.rookTarget(from, to), rook);
+        } else if (EnPassantValidator.isEnPassantMove(position, from, to)) {
+
         }
 
-        return new Board(newPieces);
+        Position nextPositon = new Position(new Board(newPieces), position.state().next(from, to, piece));
+        Move move = new Move(from, to, piece);
+
+        return new MoveResult(nextPositon, move);
     }
 }
