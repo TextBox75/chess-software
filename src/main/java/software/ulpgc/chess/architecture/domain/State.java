@@ -5,7 +5,7 @@ public record State(Side side, CastlingRights castlingRights) {
         return new State(Side.WHITE, CastlingRights.initial());
     }
 
-    public State next(Square from, Square to, Piece movedPiece) {
-        return new State(this.side.opposite(), this.castlingRights().update(from, to, movedPiece));
+    public State next(Move move) {
+        return new State(this.side.opposite(), this.castlingRights().update(move));
     }
 }

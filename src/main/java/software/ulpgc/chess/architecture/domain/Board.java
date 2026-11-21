@@ -8,9 +8,9 @@ public record Board(Map<Square, Piece> pieces) {
         this.pieces = Map.copyOf(pieces);
     }
 
-    public boolean isPathClear(Piece piece, Square from, Square to) {
-        if (piece.isKnight()) return true;
-        return isPathClear(from, to);
+    public boolean isPathClear(Move move) {
+        if (move.piece().isKnight()) return true;
+        return isPathClear(move.from(), move.to());
     }
 
     private boolean isPathClear(Square from, Square to) {
@@ -56,8 +56,10 @@ public record Board(Map<Square, Piece> pieces) {
                     Square originSquare = entry.getKey();
                     Piece piece = entry.getValue();
 
+                    Move move = new Move(originSquare, targetSquare, piece);
+
                     return piece.getBehaviour().isAttackValid(originSquare, targetSquare)
-                            && isPathClear(piece, originSquare, targetSquare);
+                            && isPathClear(move);
                 });
     }
 

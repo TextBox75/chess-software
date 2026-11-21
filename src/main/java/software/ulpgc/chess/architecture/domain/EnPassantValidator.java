@@ -17,12 +17,12 @@ public class EnPassantValidator {
                 && board.pieceAt(to) == null;
     }
 
-    public static boolean isEnPassantLegal(Position position, Square from, Square to, Move lastMove) {
-        if (!isEnPassantMove(position, from, to) || lastMove == null) return false;
+    public static boolean isEnPassantLegal(Position position, Move currentMove, Move lastMove) {
+        if (!isEnPassantMove(position, currentMove.from(), currentMove.to()) || lastMove == null) return false;
 
         Side side = position.state().side();
-        Square capturedPawnSquare = Square.from(from.file(), to.rank());
-        SquareDistance distance = new SquareDistance(from, to);
+        Square capturedPawnSquare = Square.from(currentMove.from().file(), currentMove.to().rank());
+        SquareDistance distance = new SquareDistance(currentMove.from(), currentMove.to());
 
         boolean wasDoublePawnPush = lastMove.piece().isPawn()
                 && !lastMove.piece().isOfSide(side)
@@ -31,7 +31,7 @@ public class EnPassantValidator {
 
         if (!wasDoublePawnPush) return false;
 
-        Board simulatedBoard = MoveValidator.move(position, from, to).position().board();
+        Board simulatedBoard = MoveValidator.move(position, currentMove, lastMove).board();
 
         return !simulatedBoard.isInCheck(side);
     }

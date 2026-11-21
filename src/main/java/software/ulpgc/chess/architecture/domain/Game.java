@@ -24,15 +24,17 @@ public record Game(
 
     public Game play(Square from, Square to) {
 
-        MoveResult moveResult = MoveValidator.move(this.position, from, to);
+        Move move = new Move(from, to, position.board().pieceAt(from));
 
-        if (moveResult.position().board().equals(this.position.board()) || this.status == CHECKMATE) return this;
+        Position nextPosition = MoveValidator.move(this.position, move, getLastMove());
+
+        if (nextPosition.board().equals(this.position.board()) || this.status == CHECKMATE) return this;
 
         return new Game(
-                moveResult.position(),
-                checkGameStatus(moveResult.position()),
+                nextPosition,
+                checkGameStatus(nextPosition),
                 ChessClock.initial(),
-                Stream.concat(this.moveHistory.stream(), Stream.of(moveResult.move())).toList()
+                Stream.concat(this.moveHistory.stream(), Stream.of(move)).toList()
         );
     }
 
@@ -41,10 +43,14 @@ public record Game(
         boolean inCheck = position.board().isInCheck(oppositeSide);
 
         if (inCheck) {
-            if (!MoveValidator.hasLegalMove(this.position, oppositeSide)) return CHECKMATE;
+            if (!MoveValidator.hasLegalMove(this.position, oppositeSide, getLastMove())) return CHECKMATE;
             return CHECK;
         }
 
         return PLAYING;
+    }
+
+    private Move getLastMove() {
+        return this.moveHistory.getLast();
     }
 }

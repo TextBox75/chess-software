@@ -16,22 +16,22 @@ public record CastlingRights(boolean whiteKingSide, boolean whiteQueenSide, bool
                 : (isKingSide ? blackKingSide : blackQueenSide);
     }
 
-    public CastlingRights update(Square from, Square to, Piece movedPiece) {
+    public CastlingRights update(Move move) {
         boolean wks = whiteKingSide;
         boolean wqs = whiteQueenSide;
         boolean bks = blackKingSide;
         boolean bqs = blackQueenSide;
 
-        if (movedPiece == Piece.WhiteKing) { wks = false; wqs = false; }
-        if (movedPiece == Piece.BlackKing) { bks = false; bqs = false; }
+        if (move.piece() == Piece.WhiteKing) { wks = false; wqs = false; }
+        if (move.piece() == Piece.BlackKing) { bks = false; bqs = false; }
 
         Square a1 = new Square(A, R1), h1 = new Square(H, R1);
         Square a8 = new Square(A, R8), h8 = new Square(H, R8);
 
-        if (from.equals(h1) || to.equals(h1)) wks = false;
-        if (from.equals(a1) || to.equals(a1)) wqs = false;
-        if (from.equals(h8) || to.equals(h8)) bks = false;
-        if (from.equals(a8) || to.equals(a8)) bqs = false;
+        if (move.from().equals(h1) || move.to().equals(h1)) wks = false;
+        if (move.from().equals(a1) || move.to().equals(a1)) wqs = false;
+        if (move.from().equals(h8) || move.to().equals(h8)) bks = false;
+        if (move.from().equals(a8) || move.to().equals(a8)) bqs = false;
 
         return new CastlingRights(wks, wqs, bks, bqs);
     }

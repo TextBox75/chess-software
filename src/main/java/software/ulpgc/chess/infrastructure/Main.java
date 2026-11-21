@@ -11,7 +11,7 @@ public class Main {
     // TODO: en passant
 
     // TODO: clase de room
-    // TODO: promociones (al completo, se necesita interfaz primero)
+    // TODO: promociones (implementar bien)
     // TODO: reloj (se necesita un tick-update)
 
     static void main() {
