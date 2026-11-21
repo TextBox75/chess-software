@@ -35,4 +35,8 @@ public class EnPassantValidator {
 
         return !simulatedBoard.isInCheck(side);
     }
+
+    public static Square capturedSquare(Square from, Square to) {
+        return new Square(to.file(), from.rank());
+    }
 }

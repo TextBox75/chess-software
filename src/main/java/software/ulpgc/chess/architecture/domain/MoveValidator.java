@@ -66,7 +66,7 @@ public final class MoveValidator {
             Piece rook = newPieces.remove(CastlingValidator.rookOrigin(move.from(), move.to()));
             newPieces.put(CastlingValidator.rookTarget(move.from(), move.to()), rook);
         } else if (EnPassantValidator.isEnPassantMove(position, move.from(), move.to())) {
-
+            newPieces.remove(EnPassantValidator.capturedSquare(move.from(), move.to()));
         }
 
         return new Position(new Board(newPieces), position.state().next(move));
