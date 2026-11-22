@@ -22,18 +22,12 @@ public class EnPassantValidator {
 
         Side side = position.state().side();
         Square capturedPawnSquare = Square.from(currentMove.from().file(), currentMove.to().rank());
-        SquareDistance distance = new SquareDistance(currentMove.from(), currentMove.to());
+        SquareDistance lastDistance = new SquareDistance(lastMove.from(), lastMove.to());
 
-        boolean wasDoublePawnPush = lastMove.piece().isPawn()
+        return lastMove.piece().isPawn()
                 && !lastMove.piece().isOfSide(side)
                 && lastMove.to().equals(capturedPawnSquare)
-                && distance.absY() == 2;
-
-        if (!wasDoublePawnPush) return false;
-
-        Board simulatedBoard = MoveValidator.move(position, currentMove, lastMove).board();
-
-        return !simulatedBoard.isInCheck(side);
+                && lastDistance.absY() == 2;
     }
 
     public static Square capturedSquare(Square from, Square to) {

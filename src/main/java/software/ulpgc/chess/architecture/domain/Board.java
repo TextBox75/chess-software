@@ -41,14 +41,6 @@ public record Board(Map<Square, Piece> pieces) {
         return isSquareAttacked(kingSquare, side.opposite());
     }
 
-    private Square findKingSquare(Side side) {
-        return pieces.entrySet().stream()
-                .filter(entry -> entry.getValue().isKing() && entry.getValue().isOfSide(side))
-                .map(Map.Entry::getKey)
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Rey no encontrado en el tablero"));
-    }
-
     public boolean isSquareAttacked(Square targetSquare, Side attackingSide) {
         return pieces.entrySet().stream()
                 .filter(entry -> entry.getValue().isOfSide(attackingSide))
@@ -65,5 +57,13 @@ public record Board(Map<Square, Piece> pieces) {
 
     public Piece pieceAt(Square square) {
         return this.pieces.get(square);
+    }
+
+    private Square findKingSquare(Side side) {
+        return pieces.entrySet().stream()
+                .filter(entry -> entry.getValue().isKing() && entry.getValue().isOfSide(side))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Rey no encontrado en el tablero"));
     }
 }

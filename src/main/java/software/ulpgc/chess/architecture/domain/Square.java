@@ -16,6 +16,12 @@ public record Square(File file, Rank rank) {
         return new Square(File.values()[i], Rank.values()[j]);
     }
 
+    public static List<Square> allSquares() {
+        return Arrays.stream(File.values())
+                .flatMap(file -> Arrays.stream(Rank.values()).map(rank -> new Square(file, rank)))
+                .toList();
+    }
+
     private static File fileIn(String value) {
         return fileIn(value.charAt(0));
     }
@@ -36,11 +42,5 @@ public record Square(File file, Rank rank) {
                 .filter(rank -> rank.symbol() == c)
                 .findFirst()
                 .orElse(null);
-    }
-
-    public static List<Square> allSquares() {
-        return Arrays.stream(File.values())
-                .flatMap(file -> Arrays.stream(Rank.values()).map(rank -> new Square(file, rank)))
-                .toList();
     }
 }

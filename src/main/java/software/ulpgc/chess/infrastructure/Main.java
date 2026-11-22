@@ -8,6 +8,8 @@ import static software.ulpgc.chess.architecture.domain.File.*;
 
 public class Main {
 
+    // TODO: FEN para derechos de enroque
+
     // TODO: clase de room
     // TODO: promociones (implementar bien)
     // TODO: reloj (se necesita un tick-update)

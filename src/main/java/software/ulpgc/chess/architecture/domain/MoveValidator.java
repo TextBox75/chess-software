@@ -39,12 +39,21 @@ public final class MoveValidator {
     }
 
     private static boolean isMoveLegal(Position position, Move move, Move lastMove) {
+        return followsMoveRules(position, move, lastMove)
+                && !apply(position, move).board().isInCheck(position.state().side());
+    }
+
+    private static boolean followsMoveRules(Position position, Move move, Move lastMove) {
         if (CastlingValidator.isCastlingMove(move)) {
             return CastlingValidator.isCastlingLegal(position, move);
-        } else if (EnPassantValidator.isEnPassantMove(position, move.from(), move.to())) {
+        }
+        if (EnPassantValidator.isEnPassantMove(position, move.from(), move.to())) {
             return EnPassantValidator.isEnPassantLegal(position, move, lastMove);
         }
+        return isNormalMoveLegal(position, move);
+    }
 
+    private static boolean isNormalMoveLegal(Position position, Move move) {
         Piece target = position.board().pieces().get(move.to());
         boolean isEnemyTarget = target != null && target.isWhite() != move.piece().isWhite();
 
