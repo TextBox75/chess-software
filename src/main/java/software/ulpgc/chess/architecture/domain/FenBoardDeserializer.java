@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FenBoardDeserializer {
-    public Board deserialize(String value) {
+    public static Board deserialize(String value) {
         return deserialize(value.split(" ")[0].split("/"));
     }
 
-    private Board deserialize(String[] ranks) {
+    private static Board deserialize(String[] ranks) {
         return new Board(piecesIn(ranks));
     }
 
-    private Map<Square, Piece> piecesIn(String[] ranks) {
+    private static Map<Square, Piece> piecesIn(String[] ranks) {
         Map<Square, Piece> map = new HashMap<>();
         int j = 7;
         for (String rank : ranks)
@@ -20,7 +20,7 @@ public class FenBoardDeserializer {
         return map;
     }
 
-    private Map<Square, Piece> piecesIn(int j, char[] rank) {
+    private static Map<Square, Piece> piecesIn(int j, char[] rank) {
         Map<Square, Piece> rankMap = new HashMap<>();
         int i = 0;
 
@@ -36,7 +36,7 @@ public class FenBoardDeserializer {
         return rankMap;
     }
 
-    private Piece piecesIn(char charCharacter) {
+    private static Piece piecesIn(char charCharacter) {
         return Piece.fromFenSymbol(charCharacter);
     }
 }
