@@ -10,7 +10,7 @@ public class FenPositionDeserializer implements PositionDeserializer {
     public Position deserialize(String fen) {
         String[] fields = fen.split(" ");
         Board board = boardDeserializer.deserialize(fields[0]);
-        State state = stateDeserializer.deserialize(fields[1], fields[2]);
+        State state = stateDeserializer.deserialize(fields[1], fields[2], fields[3]);
         return new Position(board, state);
     }
 }

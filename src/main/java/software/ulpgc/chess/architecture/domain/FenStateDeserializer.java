@@ -1,9 +1,11 @@
 package software.ulpgc.chess.architecture.domain;
 
+import java.util.Optional;
+
 public class FenStateDeserializer  {
 
-    public State deserialize(String sideField, String castlingField) {
-        return new State(sideFrom(sideField), rightsFrom(castlingField));
+    public State deserialize(String sideField, String castlingField, String enPassantField) {
+        return new State(sideFrom(sideField), rightsFrom(castlingField), enPassantFrom(enPassantField));
     }
 
     private Side sideFrom(String field) {
@@ -21,5 +23,9 @@ public class FenStateDeserializer  {
                 field.contains("k"),
                 field.contains("q")
         );
+    }
+
+    private Optional<Square> enPassantFrom(String field) {
+        return field.equals("-") ? Optional.empty() : Optional.of(Square.of(field));
     }
 }

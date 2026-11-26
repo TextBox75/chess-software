@@ -17,17 +17,10 @@ public class EnPassantValidator {
                 && board.pieceAt(to) == null;
     }
 
-    public static boolean isEnPassantLegal(Position position, Move currentMove, Move lastMove) {
-        if (!isEnPassantMove(position, currentMove.from(), currentMove.to()) || lastMove == null) return false;
-
-        Side side = position.state().side();
-        Square capturedPawnSquare = Square.from(currentMove.from().file(), currentMove.to().rank());
-        SquareDistance lastDistance = new SquareDistance(lastMove.from(), lastMove.to());
-
-        return lastMove.piece().isPawn()
-                && !lastMove.piece().isOfSide(side)
-                && lastMove.to().equals(capturedPawnSquare)
-                && lastDistance.absY() == 2;
+    public static boolean isEnPassantLegal(Position position, Move move) {
+        Piece victim = position.board().pieceAt(capturedSquare(move.from(), move.to()));
+        return isEnPassantMove(position, move.from(), move.to())
+                && victim != null && victim.isPawn() && !victim.isOfSide(move.piece().side());
     }
 
     public static Square capturedSquare(Square from, Square to) {

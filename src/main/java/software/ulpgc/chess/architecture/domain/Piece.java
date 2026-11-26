@@ -2,6 +2,7 @@ package software.ulpgc.chess.architecture.domain;
 
 import java.util.Arrays;
 
+import static software.ulpgc.chess.architecture.domain.Side.*;
 import static software.ulpgc.chess.architecture.domain.StandardPieceBehaviour.*;
 
 public enum Piece {
@@ -53,8 +54,12 @@ public enum Piece {
 
     public boolean isRook() { return this.name().endsWith("Rook"); }
 
+    public Side side() {
+        return isWhite() ? WHITE : BLACK;
+    }
+
     public boolean isOfSide(Side side) {
-        return this.isWhite() == (side == Side.WHITE);
+        return this.isWhite() == (side == WHITE);
     }
 
     public boolean canPromote(Rank rank) {

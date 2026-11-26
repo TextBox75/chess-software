@@ -7,8 +7,8 @@ import java.util.Map;
 import static software.ulpgc.chess.architecture.domain.Square.allSquares;
 
 public final class MoveValidator {
-    public static Position move(Position position, Move move, Move lastMove) {
-        if (move.piece() == null || !isMoveLegal(position, move, lastMove))
+    public static Position move(Position position, Move move) {
+        if (move.piece() == null || !isMoveLegal(position, move))
             return position;
 
         return apply(position, move);
@@ -21,34 +21,34 @@ public final class MoveValidator {
                 .toList();
 
         for (Square from : squares) {
-            if (hasLegalMove(position, side, from, lastMove)) return true;
+            if (hasLegalMove(position, side, from)) return true;
         }
         return false;
     }
 
-    private static boolean hasLegalMove(Position position, Side side, Square from, Move lastMove) {
+    private static boolean hasLegalMove(Position position, Side side, Square from) {
         for (Square to : allSquares()) {
             if (from.equals(to)) continue;
 
             Move move = new Move(from, to, position.board().pieceAt(from));
-            Position next = MoveValidator.move(position, move, lastMove);
+            Position next = MoveValidator.move(position, move);
 
             if (!next.board().equals(position.board()) && !next.board().isInCheck(side)) return true;
         }
         return false;
     }
 
-    private static boolean isMoveLegal(Position position, Move move, Move lastMove) {
-        return followsMoveRules(position, move, lastMove)
+    private static boolean isMoveLegal(Position position, Move move) {
+        return followsMoveRules(position, move)
                 && !apply(position, move).board().isInCheck(position.state().side());
     }
 
-    private static boolean followsMoveRules(Position position, Move move, Move lastMove) {
+    private static boolean followsMoveRules(Position position, Move move) {
         if (CastlingValidator.isCastlingMove(move)) {
             return CastlingValidator.isCastlingLegal(position, move);
         }
         if (EnPassantValidator.isEnPassantMove(position, move.from(), move.to())) {
-            return EnPassantValidator.isEnPassantLegal(position, move, lastMove);
+            return EnPassantValidator.isEnPassantLegal(position, move);
         }
         return isNormalMoveLegal(position, move);
     }

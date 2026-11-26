@@ -8,10 +8,10 @@ import static software.ulpgc.chess.architecture.domain.File.*;
 
 public class Main {
 
-    // TODO: FEN para derechos de enroque
-
+    // TODO: Mirar el mapa con la implementación de fen en passant
     // TODO: clase de room
-    // TODO: promociones (implementar bien)
+
+    // TODO: promociones (implementar bien, necesitamos interfaz)
     // TODO: reloj (se necesita un tick-update)
 
     static void main() {
